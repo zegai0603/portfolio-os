@@ -1,8 +1,8 @@
 import { CodeEditor } from "@/components/editor/CodeEditor";
-import { getIntroContent } from "@/lib/constants";
+import { getReadmeContent } from "@/lib/content";
 
 export default function HomePage() {
   return (
-    <CodeEditor code={getIntroContent()} language="python" />
+    <CodeEditor code={getReadmeContent()} language="markdown" />
   );
 }

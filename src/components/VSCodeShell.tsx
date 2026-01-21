@@ -10,9 +10,9 @@ import { CommandPalette } from "./ui/CommandPalette";
 import { Command } from "lucide-react";
 import { config } from "@/lib/config";
 
-// Map paths to tab names
 const PATH_TO_TAB: Record<string, string> = {
-    "/": "intro.py",
+    "/": "README.md",
+    "/intro": "intro.py",
     "/projects": "projects.json",
     "/skills": "skills.ts",
     "/contact": "contact.md",

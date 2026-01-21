@@ -41,7 +41,7 @@ This opens an interactive portfolio with Home, Projects, Skills, and Contact pag
 ## Keyboard Shortcuts
 
 - \`Ctrl+\\\`\` - Toggle terminal
-- \`Ctrl+K\` - Command palette
+- \`Ctrl+P\` - Command palette
 - \`Ctrl+B\` - Toggle sidebar
 
 ---

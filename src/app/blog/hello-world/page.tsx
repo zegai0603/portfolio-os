@@ -18,7 +18,7 @@ As developers, we spend most of our time in code editors. So why not make our po
 - **File Explorer** - Browse through my portfolio files
 - **Tab System** - Keep track of open pages
 - **Terminal** - Interactive command-line interface
-- **Command Palette** - Press \`Ctrl+K\` to quick navigate
+- **Command Palette** - Press \`Ctrl+P\` to quick navigate
 
 ## Tech Stack
 

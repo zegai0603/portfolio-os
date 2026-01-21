@@ -7,12 +7,16 @@ import { Sidebar } from "./ui/Sidebar";
 import { TabBar, Tab } from "./ui/TabBar";
 import { Terminal } from "./ui/Terminal";
 import { CommandPalette } from "./ui/CommandPalette";
+import { StatusBar } from "./ui/StatusBar";
+import { CopilotPanel } from "./ui/CopilotPanel";
+import { MenuBar } from "./ui/MenuBar";
 import { Command } from "lucide-react";
 import { config } from "@/lib/config";
+import { Theme, DEFAULT_THEME } from "@/lib/themes";
 
+// Map paths to tab names
 const PATH_TO_TAB: Record<string, string> = {
     "/": "README.md",
-    "/intro": "intro.py",
     "/projects": "projects.json",
     "/skills": "skills.ts",
     "/contact": "contact.md",
@@ -25,8 +29,6 @@ interface VSCodeShellProps {
     children: React.ReactNode;
 }
 
-import { MenuBar } from "./ui/MenuBar";
-
 export function VSCodeShell({ children }: VSCodeShellProps) {
     const pathname = usePathname();
     const router = useRouter();
@@ -35,6 +37,17 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
     const [openTabs, setOpenTabs] = useState<Tab[]>([]);
     const [terminalOpen, setTerminalOpen] = useState(false);
     const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+    const [copilotOpen, setCopilotOpen] = useState(false);
+    const [bottomPanelTab, setBottomPanelTab] = useState<"terminal" | "problems">("terminal");
+    const [activeTheme, setActiveTheme] = useState<Theme>(DEFAULT_THEME);
+
+    // Apply active theme
+    useEffect(() => {
+        const root = document.documentElement;
+        Object.entries(activeTheme.colors).forEach(([key, value]) => {
+            root.style.setProperty(key, value);
+        });
+    }, [activeTheme]);
 
     // Track if we specifically closed everything to show empty state
     // We can infer this: if openTabs is empty, show empty state.
@@ -52,57 +65,39 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
                 return prev;
             }
             // If no tabs exist, and we just landed (e.g. reload), we add it.
-            // But if we just closed the last tab, we don't want to re-add it immediately?
-            // The `handleCloseTab` logic manages navigation.
-            // If I close last tab, I want to stay on a "null" route? 
-            // Changing route re-triggers this effect.
-            // We should filter this effect: Only add if standard navigation occurred?
-            // Actually, if I close the last tab, I won't navigate. But pathname is still there.
-
-            // Fix: If we currently have 0 tabs, and we are NOT in a "just closed everything" state... 
-            // It's tricky.
-            // Simplify: Let's assume if we manually closed tabs, we want it empty.
-            // But if user clicks sidebar, they navigate, triggering pathname change.
 
             return [...prev, { name: tabName, path: pathname }];
         });
     }, [pathname]);
 
     const handleCloseTab = useCallback((path: string) => {
+        // Compute navigation target BEFORE setState to avoid calling router.push during render
+        let nextPath: string | null = null;
+
         setOpenTabs((prev) => {
             const newTabs = prev.filter((t) => t.path !== path);
             const tabIndex = prev.findIndex((t) => t.path === path);
 
-            // If we closed the active tab
-            if (path === pathname) {
-                if (newTabs.length > 0) {
-                    // Navigate to neighbour
-                    const nextIndex = Math.min(tabIndex, newTabs.length - 1);
-                    const nextTab = newTabs[nextIndex];
-                    router.push(nextTab.path);
-                } else {
-                    // We closed the last tab.
-                    // Do NOT navigate. 
-                    // We will just render the empty state.
-                    // But `useEffect` above might re-add it because `pathname` hasn't changed?
-                    // To get around `useEffect` dependency, we might need a ref or flag?
-                    // Or simply: check if the tab is already in `openTabs` before adding?
-                    // Yes, `useEffect` checks `existingTab`. But if we just removed it from state...
-                    // then `useEffect` will fire again? No, useEffect fires on `pathname` change.
-                    // If pathname DOES NOT change, effect doesn't fire.
-                    // So we are safe provided we don't trigger navigation.
-                }
+            // If we closed the active tab, determine where to navigate
+            if (path === pathname && newTabs.length > 0) {
+                const nextIndex = Math.min(tabIndex, newTabs.length - 1);
+                nextPath = newTabs[nextIndex].path;
             }
 
             return newTabs;
         });
+
+        // Navigate AFTER the state update (outside the setState callback)
+        if (nextPath) {
+            router.push(nextPath);
+        }
     }, [pathname, router]);
 
     // Keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             // Cmd+K - Command palette
-            if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+            if ((e.metaKey || e.ctrlKey) && e.key === "p") {
                 e.preventDefault();
                 setCommandPaletteOpen(true);
             }
@@ -124,6 +119,13 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
 
     // Toggle sidebar when clicking same activity bar item
     const handleViewChange = (view: string) => {
+        if (view === "settings") {
+            setCommandPaletteOpen(true);
+            // Ideally we could pass a flag to open themes directly, 
+            // but for now opening palette is fine as per plan.
+            return;
+        }
+
         if (view === activeView) {
             setSidebarOpen((prev) => !prev);
         } else {
@@ -153,31 +155,49 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
                 </div>
 
                 {/* Editor Area */}
-                <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-                    {/* Tab Bar */}
-                    <TabBar tabs={openTabs} onCloseTab={handleCloseTab} />
+                <div className="flex-1 flex overflow-hidden min-w-0">
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        {/* Tab Bar */}
+                        <TabBar tabs={openTabs} onCloseTab={handleCloseTab} />
 
-                    {/* Editor Content or Empty State */}
-                    <div className="flex-1 overflow-auto bg-vscode-bg relative">
-                        {openTabs.length > 0 ? (
-                            children
-                        ) : (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center text-vscode-text-muted opacity-50 select-none">
-                                <div className="mb-4 text-vscode-text-muted">
-                                    <Command size={64} />
-                                </div>
-                                <div className="text-sm space-y-2">
-                                    <div className="flex items-center gap-8 justify-between">
-                                        <span>Toggle Terminal</span>
-                                        <span className="font-mono text-xs bg-vscode-tab-inactive-bg px-1 rounded">Ctrl+`</span>
+                        {/* Editor Content or Empty State */}
+                        <div className="flex-1 overflow-auto bg-vscode-bg relative">
+                            {openTabs.length > 0 ? (
+                                children
+                            ) : (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-vscode-text-muted opacity-50 select-none">
+                                    <div className="mb-4 text-vscode-text-muted">
+                                        <Command size={64} />
+                                    </div>
+                                    <div className="text-sm space-y-2">
+                                        <div className="flex items-center gap-8 justify-between">
+                                            <span>Toggle Terminal</span>
+                                            <span className="font-mono text-xs bg-vscode-tab-inactive-bg px-1 rounded">Ctrl+`</span>
+                                        </div>
+                                        <div className="flex items-center gap-8 justify-between">
+                                            <span>Toggle Sidebar</span>
+                                            <span className="font-mono text-xs bg-vscode-tab-inactive-bg px-1 rounded">Ctrl+B</span>
+                                        </div>
+                                        <div className="flex items-center gap-8 justify-between">
+                                            <span>Toggle Command Palette</span>
+                                            <span className="font-mono text-xs bg-vscode-tab-inactive-bg px-1 rounded">Ctrl+P</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
+
+                        {/* Terminal - Now inside editor area */}
+                        <Terminal
+                            isOpen={terminalOpen}
+                            onToggle={() => setTerminalOpen(!terminalOpen)}
+                            activeTab={bottomPanelTab}
+                            onTabChange={setBottomPanelTab}
+                        />
                     </div>
 
-                    {/* Terminal - Now inside editor area */}
-                    <Terminal isOpen={terminalOpen} onToggle={() => setTerminalOpen(!terminalOpen)} />
+                    {/* Copilot Panel - Right Side */}
+                    <CopilotPanel isOpen={copilotOpen} onClose={() => setCopilotOpen(false)} />
                 </div>
             </div>
 
@@ -185,28 +205,21 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
             <CommandPalette
                 isOpen={commandPaletteOpen}
                 onClose={() => setCommandPaletteOpen(false)}
+                onThemeSelect={setActiveTheme}
             />
 
             {/* Status Bar */}
-            <div className="h-6 bg-vscode-active flex items-center justify-between px-3 text-xs text-white">
-                <div className="flex items-center gap-4">
-                    <span>🔀 main</span>
-                    {config.showErrorState ? (
-                        <span className="flex items-center gap-1 text-red-300">
-                            <span>ⓧ</span>
-                            <span>1 Error</span>
-                        </span>
-                    ) : (
-                        <span>✓ 0 Problems</span>
-                    )}
-                </div>
-                <div className="flex items-center gap-4">
-                    <span>Ln 1, Col 1</span>
-                    <span>UTF-8</span>
-                    <span>TypeScript</span>
-                </div>
-            </div>
+            <StatusBar
+                currentPath={pathname}
+                onToggleProblems={() => {
+                    setTerminalOpen(true);
+                    setBottomPanelTab("problems");
+                }}
+                onToggleCopilot={() => setCopilotOpen(prev => !prev)}
+                problemsOpen={terminalOpen && bottomPanelTab === "problems"}
+            />
         </div>
+
     );
 }
 

@@ -10,7 +10,7 @@ export interface FileNode {
 }
 
 export const FILE_TREE: FileNode[] = [
-    { name: "README.md", type: "file", path: "/readme", icon: "markdown" },
+    { name: "README.md", type: "file", path: "/", icon: "markdown" },
     {
         name: "src",
         type: "folder",
@@ -21,7 +21,7 @@ export const FILE_TREE: FileNode[] = [
                 type: "folder",
                 path: "/",
                 children: [
-                    { name: "intro.py", type: "file", path: "/", icon: "python" },
+                    { name: "intro.py", type: "file", path: "/intro", icon: "python" },
                     { name: "projects.json", type: "file", path: "/projects", icon: "json" },
                     { name: "skills.ts", type: "file", path: "/skills", icon: "typescript" },
                     { name: "contact.md", type: "file", path: "/contact", icon: "markdown" },

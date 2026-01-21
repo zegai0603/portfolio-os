@@ -1,13 +1,27 @@
 "use client";
 
 import { useState, useRef, useEffect, KeyboardEvent } from "react";
-import { ChevronUp, X, Terminal as TerminalIcon } from "lucide-react";
+import { ChevronUp, X, Terminal as TerminalIcon, AlertCircle, AlertTriangle, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { TERMINAL_COMMANDS, DIRECTORY_CONTENTS } from "@/lib/constants";
+
+// Quirky programming problems/jokes
+const QUIRKY_PROBLEMS = [
+    { type: "error", message: "Insufficient caffeine intake detected today", file: "developer.ts", line: 42 },
+    { type: "warning", message: "Semicolon anxiety disorder in progress", file: "syntax.js", line: 127 },
+    { type: "info", message: "Remember to hydrate - water.drink() recommended", file: "health.md", line: 1 },
+    { type: "warning", message: "Stack overflow: Too many browser tabs open", file: "brain.exe", line: 999 },
+    { type: "error", message: "undefined is not a function (it's a lifestyle)", file: "life.js", line: 404 },
+    { type: "info", message: "git commit -m 'I have no idea why this works'", file: ".githistory", line: 69 },
+    { type: "warning", message: "Warning: Works on my machine™", file: "excuse.log", line: 1 },
+    { type: "error", message: "Error 418: I'm a teapot, not a coffee machine", file: "beverage.api", line: 418 },
+];
 
 interface TerminalProps {
     isOpen: boolean;
     onToggle: () => void;
+    activeTab?: "terminal" | "problems";
+    onTabChange?: (tab: "terminal" | "problems") => void;
 }
 
 interface HistoryEntry {
@@ -18,7 +32,7 @@ interface HistoryEntry {
     files?: { name: string; path: string }[];
 }
 
-export function Terminal({ isOpen, onToggle }: TerminalProps) {
+export function Terminal({ isOpen, onToggle, activeTab = "terminal", onTabChange }: TerminalProps) {
     const router = useRouter();
     const [input, setInput] = useState("");
     const [history, setHistory] = useState<HistoryEntry[]>([
@@ -344,13 +358,32 @@ Opening preview...`);
             {/* Panel Tabs Header */}
             <div className="flex items-center justify-between px-4 border-b border-vscode-border bg-vscode-sidebar select-none">
                 <div className="flex items-center gap-6 text-xs font-medium h-9">
-                    <span className="text-vscode-text h-full flex items-center border-b-2 border-vscode-active cursor-default uppercase">Terminal</span>
+                    <button
+                        onClick={() => onTabChange?.("problems")}
+                        className={`h-full flex items-center uppercase transition-colors ${activeTab === "problems"
+                                ? "text-vscode-text border-b-2 border-vscode-active"
+                                : "text-vscode-text-muted hover:text-vscode-text border-b-2 border-transparent"
+                            }`}
+                    >
+                        Problems
+                    </button>
+                    <button
+                        onClick={() => onTabChange?.("terminal")}
+                        className={`h-full flex items-center uppercase transition-colors ${activeTab === "terminal"
+                                ? "text-vscode-text border-b-2 border-vscode-active"
+                                : "text-vscode-text-muted hover:text-vscode-text border-b-2 border-transparent"
+                            }`}
+                    >
+                        Terminal
+                    </button>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 px-2 border-l border-vscode-border ml-2 text-vscode-text-muted">
-                        <TerminalIcon size={14} className="text-vscode-text" />
-                        <span className="text-xs">bash</span>
-                    </div>
+                    {activeTab === "terminal" && (
+                        <div className="flex items-center gap-2 px-2 border-l border-vscode-border ml-2 text-vscode-text-muted">
+                            <TerminalIcon size={14} className="text-vscode-text" />
+                            <span className="text-xs">bash</span>
+                        </div>
+                    )}
                     <button
                         onClick={onToggle}
                         className="p-1 hover:bg-vscode-bg rounded transition-colors"
@@ -368,40 +401,66 @@ Opening preview...`);
                 </div>
             </div>
 
-            {/* Terminal Content */}
-            <div
-                ref={containerRef}
-                className="flex-1 overflow-y-auto terminal-container p-4 font-mono text-sm"
-                onClick={() => inputRef.current?.focus()}
-            >
-                {history.map((entry) => (
-                    <div key={entry.id} className="mb-2">
-                        {entry.command && (
-                            <div className="flex items-center gap-2">
-                                <span className="terminal-prompt">{getPrompt()}</span>
-                                <span>{entry.command}</span>
-                            </div>
-                        )}
-                        {entry.output && (
-                            <pre className="whitespace-pre-wrap text-vscode-text mt-1">{entry.output}</pre>
-                        )}
-                    </div>
-                ))}
+            {/* Panel Content */}
+            {activeTab === "terminal" ? (
+                /* Terminal Content */
+                <div
+                    ref={containerRef}
+                    className="flex-1 overflow-y-auto terminal-container p-4 font-mono text-sm"
+                    onClick={() => inputRef.current?.focus()}
+                >
+                    {history.map((entry) => (
+                        <div key={entry.id} className="mb-2">
+                            {entry.command && (
+                                <div className="flex items-center gap-2">
+                                    <span className="terminal-prompt">{getPrompt()}</span>
+                                    <span>{entry.command}</span>
+                                </div>
+                            )}
+                            {entry.output && (
+                                <pre className="whitespace-pre-wrap text-vscode-text mt-1">{entry.output}</pre>
+                            )}
+                        </div>
+                    ))}
 
-                {/* Current Input Line */}
-                <div className="flex items-center gap-2">
-                    <span className="terminal-prompt">{getPrompt()}</span>
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        className="terminal-input"
-                        autoFocus
-                    />
+                    {/* Current Input Line */}
+                    <div className="flex items-center gap-2">
+                        <span className="terminal-prompt">{getPrompt()}</span>
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            className="terminal-input"
+                            autoFocus
+                        />
+                    </div>
                 </div>
-            </div>
+            ) : (
+                /* Problems Content */
+                <div className="flex-1 overflow-y-auto p-2">
+                    <div className="text-xs text-vscode-text-muted px-2 py-1 mb-2">
+                        {QUIRKY_PROBLEMS.filter(p => p.type === "error").length} errors, {QUIRKY_PROBLEMS.filter(p => p.type === "warning").length} warnings
+                    </div>
+                    {QUIRKY_PROBLEMS.map((problem, idx) => (
+                        <div
+                            key={idx}
+                            className="flex items-start gap-2 px-2 py-1.5 hover:bg-vscode-list-hover rounded cursor-pointer group"
+                        >
+                            {problem.type === "error" && <AlertCircle size={14} className="text-red-400 mt-0.5 flex-shrink-0" />}
+                            {problem.type === "warning" && <AlertTriangle size={14} className="text-yellow-400 mt-0.5 flex-shrink-0" />}
+                            {problem.type === "info" && <Info size={14} className="text-blue-400 mt-0.5 flex-shrink-0" />}
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm text-vscode-text truncate">{problem.message}</p>
+                                <p className="text-xs text-vscode-text-muted">
+                                    {problem.file}:{problem.line}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

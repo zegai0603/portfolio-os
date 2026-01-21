@@ -1,6 +1,6 @@
 "use client";
 
-import { Files, Search, Github, User, MessageSquare } from "lucide-react";
+import { Files, Search, Github, User, MessageSquare, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ActivityBarProps {
@@ -17,6 +17,7 @@ const ACTIVITY_ITEMS = [
 
 const BOTTOM_ITEMS = [
     { id: "profile", icon: User, label: "Profile" },
+    { id: "settings", icon: Settings, label: "Settings" },
 ];
 
 export function ActivityBar({ activeView, onViewChange }: ActivityBarProps) {

@@ -83,7 +83,7 @@ Create a `comments` table with: `id`, `message`, `author`, `created_at`.
 ## Keyboard Shortcuts
 
 - `Ctrl+`` ` - Toggle terminal
-- `Ctrl+K` - Command palette
+- `Ctrl+P` - Command palette
 - `Ctrl+B` - Toggle sidebar
 
 ---

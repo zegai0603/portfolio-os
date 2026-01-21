@@ -60,7 +60,7 @@ export function getSkillsContent(): string {
       memory_usage: "Low",
     }));
 
-  const skillsArray = skillsData.map(s => ({
+  const skillsArray = skillsData.map((s: { name: string; level: number; status?: string; memory_usage?: string }) => ({
     name: s.name,
     level: s.level,
     status: s.status || "Active",

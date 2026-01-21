@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Terminal
 
-## Getting Started
+A VS Code-inspired portfolio with working terminal :)
 
-First, run the development server:
+## Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Set up environment
+cp .env.example .env
+# Edit .env with your personal info
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Configuration
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+All personal data is configured via environment variables in `.env`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_NAME` | Your full name |
+| `NEXT_PUBLIC_TITLE` | Your job title |
+| `NEXT_PUBLIC_EMAIL` | Contact email |
+| `NEXT_PUBLIC_GITHUB` | GitHub profile URL |
+| `NEXT_PUBLIC_GITHUB_USERNAME` | GitHub username (for project fetching) |
+| `NEXT_PUBLIC_LANGUAGES` | Comma-separated skills list |
+| `NEXT_PUBLIC_SKILLS_DATA` | JSON array of skills with levels |
 
-## Learn More
+## Terminal Commands
 
-To learn more about Next.js, take a look at the following resources:
+| Command | Description |
+|---------|-------------|
+| `help` | Show available commands |
+| `cd <dir>` | Change directory (e.g., `cd frontend`) |
+| `ls` | List current directory contents |
+| `pwd` | Print working directory |
+| `npm run dev` | Launch frontend preview (in `/frontend`) |
+| `git commit -m "msg" --author "authorname"` | Add a comment to the guestbook |
+| `whoami` | Display developer info |
+| `skills` | Show skill summary |
+| `contact` | Display contact info |
+| `clear` | Clear terminal |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Frontend Preview
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Navigate to the frontend folder and run the dev server:
 
-## Deploy on Vercel
+```bash
+cd frontend
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This opens an interactive portfolio preview with Home, Projects, Skills, and Contact pages.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+src/
+├── portfolio/
+│   ├── intro.py      # Home page (Python-style)
+│   ├── projects.json # Projects (fetched from GitHub)
+│   ├── skills.ts     # Skills display
+│   └── contact.md    # Contact info
+├── blog/             # Blog posts
+└── frontend/         # Preview app source files
+```
+
+## Optional: Supabase Integration
+
+For guestbook comments, configure:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key
+```
+
+Create a `comments` table with: `id`, `message`, `author`, `created_at`.
+
+## Keyboard Shortcuts
+
+- `Ctrl+`` ` - Toggle terminal
+- `Ctrl+K` - Command palette
+- `Ctrl+B` - Toggle sidebar
+
+---
+
+Built with Next.js + TypeScript. Inspired by VS Code.

@@ -10,6 +10,7 @@ export interface FileNode {
 }
 
 export const FILE_TREE: FileNode[] = [
+    { name: "README.md", type: "file", path: "/readme", icon: "markdown" },
     {
         name: "src",
         type: "folder",
@@ -85,7 +86,8 @@ Instagram: ${config.instagramHandle}`,
 
 // Directory contents for ls command
 export const DIRECTORY_CONTENTS: Record<string, string> = {
-    "~": `src/
+    "~": `README.md
+src/
 ├── portfolio/
 ├── blog/
 └── frontend/`,

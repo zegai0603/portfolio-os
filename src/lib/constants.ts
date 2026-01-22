@@ -55,10 +55,10 @@ export const FILE_TREE: FileNode[] = [
 // Terminal commands - uses config for dynamic content
 export const TERMINAL_COMMANDS: Record<string, string | (() => string | Promise<string>)> = {
     help: `Available commands:
-  cd <path>   - Change directory (e.g., cd frontend)
+  cd <path>   - Change directory (e.g. cd frontend)
   ls          - List current directory
   pwd         - Print working directory
-  git commit  - Commit changes (git commit -m "msg" [--author "Name"])
+  git commit  - Comment on this site permanently (git commit -m "msg" [--author "Name"])
   npm run dev - Run frontend app (when in frontend folder)
   whoami      - About me
   date        - Current date/time

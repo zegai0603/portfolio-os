@@ -7,6 +7,7 @@ export function getReadmeContent(): string {
   return `# Portfolio Terminal
 
 Hi there! Welcome to my VS Code-inspired portfolio! Navigate using the terminal or sidebar.
+Click on the TOP RIGHT eye icon to view md files in a human-readable form.
 
 ## Terminal Commands
 
@@ -46,7 +47,7 @@ This opens an interactive portfolio with Home, Projects, Skills, and Contact pag
 
 ---
 
-There's a bunch of other easter eggs in this terminal, go discover them!
+There's a bunch of other easter eggs in this webapp, go discover them!
 `;
 }
 

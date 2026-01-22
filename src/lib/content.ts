@@ -46,7 +46,7 @@ This opens an interactive portfolio with Home, Projects, Skills, and Contact pag
 
 ---
 
-Built with Next.js + TypeScript. Inspired by VS Code.
+There's a bunch of other easter eggs in this terminal, go discover them!
 `;
 }
 
@@ -191,7 +191,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>,
 )`,
-  "/frontend/App.tsx": `import { useState } from 'react'
+  "/frontend/App.tsx": `import { useState, useEffect } from 'react'
 import { Home } from './Home'
 import { Projects } from './Projects'
 import { Skills } from './Skills'
@@ -199,12 +199,20 @@ import { Contact } from './Contact'
 
 function App() {
   const [page, setPage] = useState('home')
+  const [projects, setProjects] = useState([])
+  const [skills, setSkills] = useState([])
+
+  useEffect(() => {
+    // Preload all content on mount
+    fetch("/api/projects").then(r => r.json()).then(d => setProjects(d.projects || []))
+    fetch("/api/skills").then(r => r.json()).then(d => setSkills(d.skills || []))
+  }, [])
 
   const renderPage = () => {
     switch(page) {
       case 'home': return <Home />
-      case 'projects': return <Projects />
-      case 'skills': return <Skills />
+      case 'projects': return <Projects projects={projects} />
+      case 'skills': return <Skills skills={skills} />
       case 'contact': return <Contact />
       default: return <Home />
     }
@@ -308,14 +316,18 @@ interface Project {
   topics: string[];
 }
 
-export function Projects() {
-  const [projects, setProjects] = useState<Project[]>([]);
+export function Projects({ projects: initialProjects = [] }: { projects?: Project[] }) {
+  const [projects, setProjects] = useState<Project[]>(initialProjects);
 
   useEffect(() => {
-    fetch("/api/projects")
-      .then((r) => r.json())
-      .then((d) => setProjects(d.projects || []));
-  }, []);
+    if (initialProjects.length > 0) {
+      setProjects(initialProjects);
+    } else {
+      fetch("/api/projects")
+        .then((r) => r.json())
+        .then((d) => setProjects(d.projects || []));
+    }
+  }, [initialProjects]);
 
   return (
     <section className="relative py-12 px-6 fade-in h-full overflow-y-auto">
@@ -378,14 +390,18 @@ interface Skill {
   level: number;
 }
 
-export function Skills() {
-  const [skills, setSkills] = useState<Skill[]>([]);
+export function Skills({ skills: initialSkills = [] }: { skills?: Skill[] }) {
+  const [skills, setSkills] = useState<Skill[]>(initialSkills);
 
   useEffect(() => {
-    fetch("/api/skills")
-      .then((r) => r.json())
-      .then((d) => setSkills(d.skills || []));
-  }, []);
+    if (initialSkills.length > 0) {
+      setSkills(initialSkills);
+    } else {
+      fetch("/api/skills")
+        .then((r) => r.json())
+        .then((d) => setSkills(d.skills || []));
+    }
+  }, [initialSkills]);
 
   return (
     <section className="relative py-12 px-6 h-full overflow-y-auto">

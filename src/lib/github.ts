@@ -40,7 +40,7 @@ export async function fetchGitHubRepos(username: string): Promise<GitHubRepo[]> 
 
         const response = await fetch(endpoint, {
             headers,
-            next: { revalidate: 0 }, // Disable cache for debugging
+            next: { revalidate: 3600 }, // Cache for 1 hour
         });
 
         if (!response.ok) {

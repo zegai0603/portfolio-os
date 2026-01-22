@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ChevronRight, ChevronDown, File, Folder, FolderOpen } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { FILE_TREE, FileNode } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -22,51 +23,59 @@ interface FileTreeItemProps {
 
 function FileTreeItem({ node, depth }: FileTreeItemProps) {
     const [isOpen, setIsOpen] = useState(true);
-    const router = useRouter();
     const pathname = usePathname();
     const isActive = node.type === "file" && pathname === node.path;
 
-    const handleClick = () => {
-        if (node.type === "folder") {
-            setIsOpen(!isOpen);
-        } else {
-            router.push(node.path);
-        }
-    };
-
     const iconColor = node.icon ? FILE_ICON_COLORS[node.icon] || "text-vscode-text" : "text-vscode-text";
+
+    const itemContent = (
+        <>
+            {node.type === "folder" ? (
+                <>
+                    {isOpen ? (
+                        <ChevronDown size={16} className="text-vscode-text-muted shrink-0" />
+                    ) : (
+                        <ChevronRight size={16} className="text-vscode-text-muted shrink-0" />
+                    )}
+                    {isOpen ? (
+                        <FolderOpen size={16} className="text-yellow-500 shrink-0" />
+                    ) : (
+                        <Folder size={16} className="text-yellow-500 shrink-0" />
+                    )}
+                </>
+            ) : (
+                <>
+                    <span className="w-4" />
+                    <File size={16} className={cn("shrink-0", iconColor)} />
+                </>
+            )}
+            <span className="ml-2 truncate">{node.name}</span>
+        </>
+    );
 
     return (
         <div>
-            <div
-                onClick={handleClick}
-                className={cn(
-                    "file-tree-item",
-                    isActive && "active"
-                )}
-                style={{ paddingLeft: `${depth * 12 + 8}px` }}
-            >
-                {node.type === "folder" ? (
-                    <>
-                        {isOpen ? (
-                            <ChevronDown size={16} className="text-vscode-text-muted shrink-0" />
-                        ) : (
-                            <ChevronRight size={16} className="text-vscode-text-muted shrink-0" />
-                        )}
-                        {isOpen ? (
-                            <FolderOpen size={16} className="text-yellow-500 shrink-0" />
-                        ) : (
-                            <Folder size={16} className="text-yellow-500 shrink-0" />
-                        )}
-                    </>
-                ) : (
-                    <>
-                        <span className="w-4" />
-                        <File size={16} className={cn("shrink-0", iconColor)} />
-                    </>
-                )}
-                <span className="ml-2 truncate">{node.name}</span>
-            </div>
+            {node.type === "folder" ? (
+                <div
+                    onClick={() => setIsOpen(!isOpen)}
+                    className={cn("file-tree-item")}
+                    style={{ paddingLeft: `${depth * 12 + 8}px` }}
+                >
+                    {itemContent}
+                </div>
+            ) : (
+                <Link
+                    href={node.path}
+                    prefetch={true}
+                    className={cn(
+                        "file-tree-item",
+                        isActive && "active"
+                    )}
+                    style={{ paddingLeft: `${depth * 12 + 8}px` }}
+                >
+                    {itemContent}
+                </Link>
+            )}
             {node.type === "folder" && isOpen && node.children && (
                 <div>
                     {node.children.map((child) => (
@@ -91,3 +100,4 @@ export function FileTree({ data }: FileTreeProps) {
         </div>
     );
 }
+

@@ -62,7 +62,7 @@ export default function Skills({ onBack }: SkillsProps) {
 
             <button className="cli-back" onClick={onBack}>
                 <span className="cli-tilde">~</span> <span className="cli-dollar">$</span>{" "}
-                <span className="cli-back-cmd">cd .. (back)</span>
+                <span className="cli-back-cmd">cd .. [back]</span>
             </button>
         </div>
     );

@@ -2,6 +2,6 @@
 
 import { PreviewShell } from "@/components/preview/PreviewShell";
 
-export default function FrontendPreviewPage() {
+export default function PreviewPage() {
     return <PreviewShell />;
 }

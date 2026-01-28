@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { VSCodeShell } from "@/components/VSCodeShell";
+import { ConditionalShell } from "@/components/ConditionalShell";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={jetbrainsMono.variable}>
       <body className="font-mono antialiased" suppressHydrationWarning>
-        <VSCodeShell>{children}</VSCodeShell>
+        <ConditionalShell>{children}</ConditionalShell>
       </body>
     </html>
   );

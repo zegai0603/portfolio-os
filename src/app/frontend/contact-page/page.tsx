@@ -1,55 +1,64 @@
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { config } from "@/lib/config";
 
-const CONTACT_TSX = `import { Mail, Github, Linkedin, Instagram, MapPin } from 'lucide-react';
-import { config } from '@/lib/config';
+const CONTACTS_TSX = `interface ContactsProps {
+    onBack: () => void;
+}
 
-export default function Contact() {
-  const links = [
-    { label: 'Email', value: '${config.email}', href: 'mailto:${config.email}', icon: <Mail size={24} /> },
-    { label: 'GitHub', value: '${config.githubUsername}', href: '${config.github}', icon: <Github size={24} /> },
-    { label: 'LinkedIn', value: 'LinkedIn', href: '${config.linkedin}', icon: <Linkedin size={24} /> },
-    { label: 'Instagram', value: '${config.instagramHandle}', href: '${config.instagram}', icon: <Instagram size={24} /> },
-  ];
+const contactLinks = [
+    { label: "mail", value: "${config.email}", href: "mailto:${config.email}" },
+    { label: "github", value: "${config.githubUsername}", href: "${config.github}" },
+    { label: "linkedin", value: "linkedin", href: "${config.linkedin}" },
+    { label: "instagram", value: "${config.instagramHandle}", href: "${config.instagram}" },
+].filter((c) => c.value && c.href);
 
-  return (
-    <div className="page contact">
-      <div className="terminal-header">
-        <span className="prompt">$</span> cat contact.md
-      </div>
-      
-      <div className="content">
-        <h1>Get in Touch</h1>
-        <p className="subtitle">Open to opportunities and collaborations</p>
-        
-        <div className="links">
-          {links.map(link => (
-            <a 
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link-card"
-            >
-              <span className="icon">{link.icon}</span>
-              <div className="link-info">
-                <span className="link-label">{link.label}</span>
-                <span className="link-value">{link.value}</span>
-              </div>
-              <span className="arrow">→</span>
-            </a>
-          ))}
+export default function Contacts({ onBack }: ContactsProps) {
+    return (
+        <div className="cli-section">
+            <div className="cli-prompt">
+                <span className="cli-tilde">~</span> <span className="cli-dollar">$</span> cat contacts.md
+            </div>
+
+            <div className="cli-contacts">
+                <div className="cli-contacts-header">
+                    <span>PROTO</span>
+                    <span>ADDRESS</span>
+                    <span>STATE</span>
+                </div>
+
+                {contactLinks.map((link) => (
+                    <a
+                        key={link.label}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="cli-contact-row"
+                    >
+                        <span className="cli-contact-proto">{link.label}</span>
+                        <span className="cli-contact-addr">{link.value || link.href}</span>
+                        <span className="cli-contact-state">ESTABLISHED</span>
+                    </a>
+                ))}
+
+                <div className="cli-contact-row cli-contact-location">
+                    <span className="cli-contact-proto">geo</span>
+                    <span className="cli-contact-addr">${config.location}</span>
+                    <span className="cli-contact-state">ACTIVE</span>
+                </div>
+            </div>
+
+            <div className="cli-contact-msg">
+                <span className="cli-comment"># feel free to reach out!</span>
+            </div>
+
+            <button className="cli-back" onClick={onBack}>
+                <span className="cli-tilde">~</span> <span className="cli-dollar">$</span>{" "}
+                <span className="cli-back-cmd">cd .. (back)</span>
+            </button>
         </div>
-        
-        <div className="location">
-          <span><MapPin size={16} style={{ display: 'inline' }} /> Based in ${config.location}</span>
-        </div>
-
-      </div>
-    </div>
-  );
+    );
 }`;
 
 export default function FrontendContactPage() {
-  return <CodeEditor code={CONTACT_TSX} language="tsx" />;
+  return <CodeEditor code={CONTACTS_TSX} language="tsx" />;
 }

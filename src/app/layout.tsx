@@ -9,8 +9,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio Terminal | Developer Portfolio",
-  description: "A VS Code-inspired developer portfolio",
+  title: "zk's portfolio",
+  description: "A VS Code-inspired portfolio website",
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={jetbrainsMono.variable}>
-      <body className="font-mono antialiased">
+      <body className="font-mono antialiased" suppressHydrationWarning>
         <VSCodeShell>{children}</VSCodeShell>
       </body>
     </html>

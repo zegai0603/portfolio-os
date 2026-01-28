@@ -1,17 +1,17 @@
 import { CodeEditor } from "@/components/editor/CodeEditor";
 
-const MAIN_TSX = `import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import './index.css';
+const MAIN_TSX = `import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./styles.css";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
+// CLI Portfolio - Entry Point
+// Keyboard shortcuts: h(home) a(about) p(projects) s(skills) c(contacts)
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>
 );`;
 
 export default function FrontendMainPage() {

@@ -14,8 +14,8 @@ interface CodeEditorProps {
 }
 
 export function CodeEditor({ code, language, showLineNumbers = true }: CodeEditorProps) {
-    const [isPreview, setIsPreview] = useState(false);
     const isMarkdown = language === "markdown";
+    const [isPreview, setIsPreview] = useState(isMarkdown);
 
     return (
         <div className="h-full relative bg-vscode-editor-bg">

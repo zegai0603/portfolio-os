@@ -1,62 +1,76 @@
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { config } from "@/lib/config";
 
-const HOME_TSX = `import { useEffect, useState } from 'react';
-
-interface Developer {
-  name: string;
-  title: string;
-  bio: string;
-  location: string;
-  languages: string[];
-  hobbies: string[];
+const HOME_TSX = `interface HomeProps {
+    onNavigate: (view: "about" | "projects" | "skills" | "contacts") => void;
 }
 
-export default function Home() {
-  const [data, setData] = useState<Developer | null>(null);
+export default function Home({ onNavigate }: HomeProps) {
+    return (
+        <div className="cli-section">
+            <div className="cli-prompt">
+                <span className="cli-tilde">~</span> <span className="cli-dollar">$</span> ls -a
+            </div>
 
-  useEffect(() => {
-    // Fetch from parent app's API
-    fetch('/api/intro')
-      .then(res => res.json())
-      .then(setData);
-  }, []);
+            <div className="cli-list">
+                <div className="cli-row">
+                    <span className="cli-dot">.</span>
+                    <button className="cli-link" onClick={() => onNavigate("about")}>
+                        about
+                    </button>
+                    <span className="cli-arrow">→</span>
+                    <span className="cli-desc">
+                        ${config.name || "Developer"}, ${config.location || "Earth"}
+                    </span>
+                </div>
 
-  if (!data) return <div className="loading">Loading...</div>;
+                <div className="cli-row">
+                    <span className="cli-dot">.</span>
+                    <button className="cli-link" onClick={() => onNavigate("projects")}>
+                        projects
+                    </button>
+                    <span className="cli-arrow">→</span>
+                    <span className="cli-desc">GitHub repositories</span>
+                </div>
 
-  return (
-    <div className="page home">
-      <div className="terminal-header">
-        <span className="prompt">$</span> cat intro.py
-      </div>
-      
-      <div className="content">
-        <h1 className="glitch" data-text={data.name}>{data.name}</h1>
-        <p className="title">{data.title}</p>
-        <p className="bio">{data.bio}</p>
-        
-        <div className="section">
-          <h2>// Languages</h2>
-          <div className="tags">
-            {data.languages.map(lang => (
-              <span key={lang} className="tag">{lang}</span>
-            ))}
-          </div>
+                <div className="cli-row">
+                    <span className="cli-dot">.</span>
+                    <button className="cli-link" onClick={() => onNavigate("skills")}>
+                        skills
+                    </button>
+                    <span className="cli-arrow">→</span>
+                    <span className="cli-desc">
+                        ${config.languages?.slice(0, 4).join(", ") || "Various technologies"}
+                    </span>
+                </div>
+
+                <div className="cli-row">
+                    <span className="cli-dot">.</span>
+                    <span className="cli-label">interests</span>
+                    <span className="cli-arrow">→</span>
+                    <span className="cli-desc">
+                        ${config.hobbies?.join(", ") || config.currentFocus || "Building things"}
+                    </span>
+                </div>
+
+                <div className="cli-row">
+                    <span className="cli-dot">.</span>
+                    <button className="cli-link" onClick={() => onNavigate("contacts")}>
+                        contacts
+                    </button>
+                    <span className="cli-arrow">→</span>
+                    <span className="cli-desc">mail, github, linkedin, instagram</span>
+                </div>
+            </div>
+
+            <div className="cli-prompt cli-prompt-bottom">
+                <span className="cli-tilde">~</span> <span className="cli-dollar">$</span>
+                <span className="cli-cursor">▊</span>
+            </div>
         </div>
-        
-        <div className="section">
-          <h2>// Hobbies</h2>
-          <ul className="list">
-            {data.hobbies.map(hobby => (
-              <li key={hobby}>→ {hobby}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }`;
 
 export default function FrontendHomePage() {
-    return <CodeEditor code={HOME_TSX} language="tsx" />;
+  return <CodeEditor code={HOME_TSX} language="tsx" />;
 }

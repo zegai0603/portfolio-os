@@ -51,6 +51,8 @@ export default function About({ onBack }: AboutProps) {
     );
 }`;
 
+import FaultyTerminal from "@/components/ui/FaultyTerminal";
+
 export default function FrontendAboutPage() {
     return <CodeEditor code={ABOUT_TSX} language="tsx" />;
 }

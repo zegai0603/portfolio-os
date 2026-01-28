@@ -13,6 +13,8 @@ import "./styles.css";
 
 type View = "home" | "about" | "projects" | "skills" | "contacts";
 
+
+
 export default function App() {
     const [activeView, setActiveView] = useState<View>("home");
 
@@ -52,5 +54,5 @@ export default function App() {
 }`;
 
 export default function FrontendAppPage() {
-  return <CodeEditor code={APP_TSX} language="tsx" />;
+    return <CodeEditor code={APP_TSX} language="tsx" />;
 }

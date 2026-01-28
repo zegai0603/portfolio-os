@@ -22,6 +22,8 @@ const PATH_TO_TAB: Record<string, string> = {
     "/contact": "contact.md",
     "/blog": "blog/",
     "/frontend/preview": "Preview",
+    "/code": "README",
+    "/code/readme": "README",
 };
 
 
@@ -121,8 +123,6 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
     const handleViewChange = (view: string) => {
         if (view === "settings") {
             setCommandPaletteOpen(true);
-            // Ideally we could pass a flag to open themes directly, 
-            // but for now opening palette is fine as per plan.
             return;
         }
 
@@ -135,7 +135,7 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
     };
 
     return (
-        <div className="h-screen flex flex-col bg-vscode-bg overflow-hidden">
+        <div className="h-screen flex flex-col bg-vscode-bg overflow-hidden relative">
             {/* Menu Bar */}
             <MenuBar onToggleTerminal={() => setTerminalOpen(prev => !prev)} />
 

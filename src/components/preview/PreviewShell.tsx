@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { config } from "@/lib/config";
 import { SquareTerminal } from "lucide-react";
 import "@/app/preview/preview.css";
+import FaultyTerminal from "@/components/ui/FaultyTerminal";
 
 interface Project {
     name: string;
@@ -24,6 +25,8 @@ interface Skill {
 }
 
 type View = "home" | "about" | "projects" | "skills" | "contacts";
+
+const GRID_MUL: [number, number] = [2, 1];
 
 export function PreviewShell() {
     const router = useRouter();
@@ -377,19 +380,47 @@ export function PreviewShell() {
     };
 
     return (
-        <div className="cli-root">
-            <div className="cli-container">
-                <div className="cli-content-scroll">
-                    {renderContent()}
-                </div>
+        <div className="relative w-full h-full min-h-[600px] overflow-hidden flex items-center justify-center p-8 bg-black/50">
+            {/* Background */}
+            <div className="absolute inset-0 z-0">
+                <FaultyTerminal
+                    scale={1.7}
+                    gridMul={GRID_MUL}
+                    digitSize={1}
+                    timeScale={0.7}
+                    pause={false}
+                    scanlineIntensity={0}
+                    glitchAmount={1}
+                    flickerAmount={1}
+                    noiseAmp={1}
+                    chromaticAberration={0}
+                    dither={0}
+                    curvature={0}
+                    tint="#ceab5f"
+                    mouseReact
+                    mouseStrength={0.2}
+                    pageLoadAnimation
+                    brightness={0.4}
+                />
             </div>
 
-            {/* Explore Link at top right - outside cli-container to avoid backdrop-filter containing block issue */}
-            <div className="explore-btn-container">
-                <Link href="/code" className="explore-btn" prefetch={true}>
-                    <SquareTerminal size={14} />
-                    <span>Code</span>
-                </Link>
+            {/* Content Area */}
+            <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
+                <div className="cli-root !bg-transparent w-full h-full pointer-events-auto">
+                    <div className="cli-container">
+                        <div className="cli-content-scroll">
+                            {renderContent()}
+                        </div>
+                    </div>
+
+                    {/* Explore Link at top right */}
+                    <div className="explore-btn-container">
+                        <Link href="/code" className="explore-btn" prefetch={true}>
+                            <SquareTerminal size={14} />
+                            <span>Code</span>
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );

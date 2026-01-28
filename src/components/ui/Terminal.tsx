@@ -361,8 +361,8 @@ Opening preview...`);
                     <button
                         onClick={() => onTabChange?.("problems")}
                         className={`h-full flex items-center uppercase transition-colors ${activeTab === "problems"
-                                ? "text-vscode-text border-b-2 border-vscode-active"
-                                : "text-vscode-text-muted hover:text-vscode-text border-b-2 border-transparent"
+                            ? "text-vscode-text border-b-2 border-vscode-active"
+                            : "text-vscode-text-muted hover:text-vscode-text border-b-2 border-transparent"
                             }`}
                     >
                         Problems
@@ -370,8 +370,8 @@ Opening preview...`);
                     <button
                         onClick={() => onTabChange?.("terminal")}
                         className={`h-full flex items-center uppercase transition-colors ${activeTab === "terminal"
-                                ? "text-vscode-text border-b-2 border-vscode-active"
-                                : "text-vscode-text-muted hover:text-vscode-text border-b-2 border-transparent"
+                            ? "text-vscode-text border-b-2 border-vscode-active"
+                            : "text-vscode-text-muted hover:text-vscode-text border-b-2 border-transparent"
                             }`}
                     >
                         Terminal

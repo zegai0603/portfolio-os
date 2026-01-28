@@ -6,8 +6,8 @@ import { VSCodeShell } from "./VSCodeShell";
 export function ConditionalShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
-    // Only use VSCodeShell for code routes
-    if (pathname === "/code" || pathname.startsWith("/code/")) {
+    // Only use VSCodeShell for code routes and frontend preview
+    if (pathname === "/code" || pathname.startsWith("/code/") || pathname.startsWith("/frontend/")) {
         return <VSCodeShell>{children}</VSCodeShell>;
     }
 

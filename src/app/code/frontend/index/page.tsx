@@ -15,6 +15,8 @@ const INDEX_HTML = `<!DOCTYPE html>
   </body>
 </html>`;
 
+import FaultyTerminal from "@/components/ui/FaultyTerminal";
+
 export default function FrontendIndexPage() {
-    return <CodeEditor code={INDEX_HTML} language="html" />;
+  return <CodeEditor code={INDEX_HTML} language="html" />;
 }

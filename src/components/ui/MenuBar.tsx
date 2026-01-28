@@ -42,7 +42,7 @@ export function MenuBar({ onToggleTerminal }: MenuBarProps) {
 
             {/* Preview Mode Button with Rainbow Border */}
             <Link
-                href="/preview"
+                href="/"
                 className="preview-rainbow-btn flex items-center gap-1.5 px-3 py-1 text-xs rounded-md transition-all mr-2"
                 title="View Portfolio (Non-Dev Mode)"
             >
@@ -50,34 +50,7 @@ export function MenuBar({ onToggleTerminal }: MenuBarProps) {
                 <span>Portfolio</span>
             </Link>
 
-            {/* Rainbow border animation styles */}
-            <style jsx global>{`
-                .preview-rainbow-btn {
-                    border: 2px solid #ffffff;
-                    color: #d4d4d4;
-                    background: rgba(30, 30, 30, 0.8);
-                    transition: transform 150ms, box-shadow 150ms;
-                }
-                
-                .preview-rainbow-btn:hover {
-                    transform: scale(1.05);
-                    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-                    color: #ffffff;
-                }
-                
-                @media (prefers-color-scheme: light) {
-                    .preview-rainbow-btn {
-                        border-color: #000000;
-                        color: #333333;
-                        background: rgba(255, 255, 255, 0.9);
-                    }
-                    
-                    .preview-rainbow-btn:hover {
-                        box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
-                        color: #000000;
-                    }
-                }
-            `}</style>
+
 
             {/* Window Controls Removed */}
         </div>

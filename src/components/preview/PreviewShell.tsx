@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { config } from "@/lib/config";
-import { Eye } from "lucide-react";
+import { SquareTerminal } from "lucide-react";
 import "@/app/preview/preview.css";
 
 interface Project {
@@ -42,7 +43,22 @@ export function PreviewShell() {
             .then((r) => r.json())
             .then((d) => setSkills(d.skills || []))
             .finally(() => setLoadingSkills(false));
-    }, []);
+
+        // Prefetch all code routes
+        import("@/lib/constants").then(({ FILE_TREE }) => {
+            const prefetchNodes = (nodes: any[]) => {
+                nodes.forEach(node => {
+                    if (node.type === "file" && node.path) {
+                        router.prefetch(node.path);
+                    }
+                    if (node.children) {
+                        prefetchNodes(node.children);
+                    }
+                });
+            };
+            prefetchNodes(FILE_TREE);
+        });
+    }, [router]);
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         const target = e.target as HTMLElement;
@@ -153,12 +169,12 @@ export function PreviewShell() {
 
             <div className="cli-about">
                 <pre className="cli-ascii">{`
-  _____ _______ ______ _  ____     _______ 
- |_   _|__   __|  ____| |/ /\\ \\   / /  ___|
-   | |    | |  | |__  | ' /  \\ \\_/ /| |__  
-   | |    | |  |  __| |  <    \\   / |  __| 
-   | |    | |  | |____| . \\    | |  | |___ 
-   |_|    |_|  |______|_|\\_\\   |_|  |_____|
+   ______          __              
+  /_  __/__  ___  / /____  _____   
+   / / /_  / / _ \\/ //_/ / / / _ \\  
+  / /   / /_/  __/ ,< / /_/ /  __/  
+ /_/   /___/\\___/_/|_|\\__, /\\___/   
+                     /____/         
 `}</pre>
 
                 <div className="cli-about-content">
@@ -370,10 +386,10 @@ export function PreviewShell() {
 
             {/* Explore Link at top right - outside cli-container to avoid backdrop-filter containing block issue */}
             <div className="explore-btn-container">
-                <button onClick={() => router.push("/")} className="explore-btn">
-                    <Eye size={14} />
-                    <span>Explore</span>
-                </button>
+                <Link href="/code" className="explore-btn" prefetch={true}>
+                    <SquareTerminal size={14} />
+                    <span>Code</span>
+                </Link>
             </div>
         </div>
     );

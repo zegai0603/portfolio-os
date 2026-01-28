@@ -275,3 +275,33 @@ body {
 .code-editor-pre code span {
   display: inline !important;
 }
+
+/* ========================================
+   Preview Button Rainbow Styles
+   ======================================== */
+
+.preview-rainbow-btn {
+  border: 2px solid #ffffff;
+  color: #d4d4d4;
+  background: rgba(30, 30, 30, 0.8);
+  transition: transform 150ms, box-shadow 150ms;
+}
+
+.preview-rainbow-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+@media (prefers-color-scheme: light) {
+  .preview-rainbow-btn {
+    border-color: #000000;
+    color: #333333;
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .preview-rainbow-btn:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    color: #000000;
+  }
+}

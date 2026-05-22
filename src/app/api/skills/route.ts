@@ -1,17 +1,13 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { getSkills, isFirebaseConfigured } from '@/lib/firebase';
 import { config } from '@/lib/config';
 
-// GET - Fetch skills from config (Supabase optional)
+// GET - Fetch skills from config (Firebase optional)
 export async function GET() {
     try {
-        // Try Supabase first if configured
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        if (supabaseUrl) {
-            const { data, error } = await supabase
-                .from('skills')
-                .select('*')
-                .order('level', { ascending: false });
+        // Try Firebase first if configured
+        if (isFirebaseConfigured) {
+            const { data, error } = await getSkills();
 
             if (!error && data && data.length > 0) {
                 return NextResponse.json({
@@ -19,7 +15,7 @@ export async function GET() {
                     meta: {
                         total: data.length,
                         last_updated: new Date().toISOString(),
-                        source: 'supabase',
+                        source: 'firebase',
                     },
                 });
             }

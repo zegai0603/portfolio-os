@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { CodeEditor } from "@/components/editor/CodeEditor";
-import { getBlogPostBySlug, BlogPost } from "@/lib/supabase";
+import { getBlogPostBySlug, BlogPost } from "@/lib/firebase";
 
 export default function BlogPostPage() {
     const params = useParams();

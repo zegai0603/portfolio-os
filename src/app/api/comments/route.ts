@@ -1,34 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { addComment, getComments, isFirebaseConfigured } from '@/lib/firebase';
 import { generateCommitHash, getRandomCommitPrefix } from '@/lib/utils';
 
-// GET - Fetch all comments (requires Supabase)
+// GET - Fetch all comments (requires Firebase)
 export async function GET() {
     try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-
-        if (!supabaseUrl) {
+        if (!isFirebaseConfigured) {
             return NextResponse.json({
                 comments: [],
-                message: "Comments feature requires Supabase configuration",
+                message: "Comments feature requires Firebase configuration",
                 source: 'none',
             });
         }
 
-        const { data, error } = await supabase
-            .from('comments')
-            .select('*')
-            .order('created_at', { ascending: false });
+        const { data, error } = await getComments();
 
         if (error) {
             return NextResponse.json({
                 comments: [],
                 error: error.message,
-                source: 'supabase_error',
+                source: 'firebase_error',
             });
         }
 
-        return NextResponse.json({ comments: data, source: 'supabase' });
+        return NextResponse.json({ comments: data, source: 'firebase' });
     } catch {
         return NextResponse.json(
             { error: 'Failed to fetch comments' },
@@ -37,14 +32,12 @@ export async function GET() {
     }
 }
 
-// POST - Create a new comment (requires Supabase)
+// POST - Create a new comment (requires Firebase)
 export async function POST(request: NextRequest) {
     try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-
-        if (!supabaseUrl) {
+        if (!isFirebaseConfigured) {
             return NextResponse.json(
-                { error: 'Comments feature requires Supabase configuration' },
+                { error: 'Comments feature requires Firebase configuration' },
                 { status: 503 }
             );
         }
@@ -62,11 +55,7 @@ export async function POST(request: NextRequest) {
         const hash = generateCommitHash(message);
         const prefix = getRandomCommitPrefix();
 
-        const { data, error } = await supabase
-            .from('comments')
-            .insert([{ username, message, hash, prefix }])
-            .select()
-            .single();
+        const { data, error } = await addComment(message, username, { hash, prefix });
 
         if (error) {
             return NextResponse.json(
@@ -75,7 +64,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        return NextResponse.json({ comment: data, source: 'supabase' }, { status: 201 });
+        return NextResponse.json({ comment: data, source: 'firebase' }, { status: 201 });
     } catch {
         return NextResponse.json(
             { error: 'Failed to create comment' },

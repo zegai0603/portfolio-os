@@ -1,0 +1,49 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if isValidComment();
+      allow update, delete: if false;
+    }
+
+    match /blog_posts/{postId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /skills/{skillId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+
+  function isValidComment() {
+    let data = request.resource.data;
+
+    return data.keys().hasOnly([
+        'username',
+        'message',
+        'hash',
+        'prefix',
+        'created_at'
+      ])
+      && data.username is string
+      && data.username.size() > 0
+      && data.username.size() <= 80
+      && data.message is string
+      && data.message.size() > 0
+      && data.message.size() <= 1000
+      && data.hash is string
+      && data.hash.matches('^[a-f0-9]{7}$')
+      && data.prefix is string
+      && data.prefix.size() > 0
+      && data.prefix.size() <= 20
+      && data.created_at == request.time;
+  }
+}

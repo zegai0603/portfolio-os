@@ -7,9 +7,8 @@ import { config } from "@/lib/config";
 import { searchFiles, type FileResult } from "@/lib/search";
 import { FILE_TREE, FileNode } from "@/lib/constants";
 import { ChevronRight, ChevronDown, GitCommit, FileCode, Circle, CircleUser } from "lucide-react";
-import { cn } from "@/lib/utils";
 
-import { getComments, type Comment } from "@/lib/supabase";
+import { getComments, type Comment } from "@/lib/firebase";
 
 interface SidebarProps {
     activeView: string;
@@ -88,7 +87,7 @@ export function Sidebar({ activeView }: SidebarProps) {
     useEffect(() => {
         // Find existing blog nodes to avoid duplication if effect runs twice (though setting from constant resets it)
         // We'll just fetch and update.
-        import("@/lib/supabase").then(({ getBlogPosts }) => {
+        import("@/lib/firebase").then(({ getBlogPosts }) => {
             getBlogPosts().then(({ data }) => {
                 if (data) {
                     setFileTree(prevTree => {
@@ -124,7 +123,7 @@ export function Sidebar({ activeView }: SidebarProps) {
 
     const fetchComments = useCallback(() => {
         setIsLoading(true);
-        getComments().then(({ data, error }) => {
+        getComments().then(({ data }) => {
             if (data) {
                 setComments(data);
             }
@@ -284,7 +283,7 @@ export function Sidebar({ activeView }: SidebarProps) {
                         <div className="flex-1 overflow-y-auto">
                             <div className="px-2">
                                 <div className="pl-4 border-l border-vscode-border ml-3 space-y-6 py-2">
-                                    {comments.map((comment, idx) => (
+                                    {comments.map((comment) => (
                                         <div key={comment.id} className="relative">
                                             <div className="absolute -left-[21px] top-1 bg-vscode-sidebar">
                                                 <Circle size={10} className="text-vscode-active fill-current" />

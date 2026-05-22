@@ -69,16 +69,22 @@ src/
 └── frontend/         # Preview app source files
 ```
 
-## Optional: Supabase Integration
+## Optional: Firebase Integration
 
 For guestbook comments, configure:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key
+NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your-measurement-id
 ```
 
-Create a `comments` table with: `id`, `message`, `author`, `created_at`.
+Create Firestore collections for `comments`, `blog_posts`, and optionally `skills`.
+See `resources/firestore_schema.md` for expected fields.
 
 ## Keyboard Shortcuts
 

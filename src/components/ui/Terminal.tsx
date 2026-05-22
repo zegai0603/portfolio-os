@@ -260,7 +260,7 @@ Opening preview...`);
                 }]);
 
                 try {
-                    const { addComment } = await import("@/lib/supabase");
+                    const { addComment } = await import("@/lib/firebase");
                     const { error } = await addComment(message, author);
 
                     if (error) throw error;

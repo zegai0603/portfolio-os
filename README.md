@@ -27,8 +27,18 @@ All personal data is configured via environment variables in `.env`:
 | `NEXT_PUBLIC_EMAIL` | Contact email |
 | `NEXT_PUBLIC_GITHUB` | GitHub profile URL |
 | `NEXT_PUBLIC_GITHUB_USERNAME` | GitHub username (for project fetching) |
+| `GITHUB_TOKEN` | Server-only GitHub token for private/collaborator repo fetching |
+| `GITHUB_REPO_ALLOWLIST` | Optional comma-separated repo allowlist, e.g. `owner/repo,other-repo` |
 | `NEXT_PUBLIC_LANGUAGES` | Comma-separated skills list |
 | `NEXT_PUBLIC_SKILLS_DATA` | JSON array of skills with levels |
+
+For private collaborator repositories that require a classic token, keep the token
+server-side and pair it with an allowlist:
+
+```env
+GITHUB_TOKEN=ghp_your_classic_token
+GITHUB_REPO_ALLOWLIST=owner/private-repo,yourname/public-repo
+```
 
 ## Terminal Commands
 

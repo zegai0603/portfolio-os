@@ -18,12 +18,13 @@ export interface GitHubRepo {
 }
 
 export async function fetchGitHubRepos(username: string): Promise<GitHubRepo[]> {
-    if (!username) {
+    const token = process.env.GITHUB_TOKEN;
+
+    if (!username && !token) {
         return [];
     }
 
     try {
-        const token = process.env.GITHUB_TOKEN;
         console.log(`[GitHub] Fetching repos for ${username}. Token present: ${!!token}`);
 
         const endpoint = token
@@ -53,16 +54,25 @@ export async function fetchGitHubRepos(username: string): Promise<GitHubRepo[]> 
         const repos: GitHubRepo[] = await response.json();
         console.log(`[GitHub] Fetched ${repos.length} repos.`);
 
-        // Filter out forks and sort by stars (or updated if preferred)
-        // If searching private, we might want to see them all, so less filtering?
-        // Let's keep the .github filter.
+        const allowedRepos = parseRepoAllowlist(process.env.GITHUB_REPO_ALLOWLIST);
+
         return repos
             .filter((repo) => !repo.name.includes(".github"))
+            .filter((repo) => allowedRepos.size === 0 || allowedRepos.has(repo.full_name) || allowedRepos.has(repo.name))
             .sort((a, b) => b.stargazers_count - a.stargazers_count);
     } catch (error) {
         console.error("Failed to fetch GitHub repos:", error);
         return [];
     }
+}
+
+function parseRepoAllowlist(value?: string): Set<string> {
+    return new Set(
+        (value || "")
+            .split(",")
+            .map((repo) => repo.trim())
+            .filter(Boolean)
+    );
 }
 
 export function formatReposAsJson(repos: GitHubRepo[]): string {

@@ -101,7 +101,7 @@ projects.json
 skills.ts
 contact.md`,
 
-    "~/src/blog": `hello-world.md`,
+    "~/src/blog": `vibecoding-portfolio.md`,
 
     "~/src/frontend": `package.json
 index.html

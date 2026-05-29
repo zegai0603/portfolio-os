@@ -11,7 +11,6 @@ import { StatusBar } from "./ui/StatusBar";
 import { CopilotPanel } from "./ui/CopilotPanel";
 import { MenuBar } from "./ui/MenuBar";
 import { Command } from "lucide-react";
-import { config } from "@/lib/config";
 import { Theme, DEFAULT_THEME } from "@/lib/themes";
 
 // Map paths to tab names
@@ -22,9 +21,22 @@ const PATH_TO_TAB: Record<string, string> = {
     "/contact": "contact.md",
     "/blog": "blog/",
     "/frontend/preview": "Preview",
-    "/code": "README",
-    "/code/readme": "README",
+    "/code": "README.md",
+    "/code/readme": "README.md",
+    "/code/blog": "blog/",
 };
+
+function getTabName(pathname: string) {
+    if (PATH_TO_TAB[pathname]) {
+        return PATH_TO_TAB[pathname];
+    }
+
+    if (pathname.startsWith("/code/blog/")) {
+        return `${pathname.split("/").pop() || "untitled"}.md`;
+    }
+
+    return pathname.split("/").pop() || "untitled";
+}
 
 
 interface VSCodeShellProps {
@@ -58,17 +70,19 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
 
     // Add tab when navigating
     useEffect(() => {
-        const tabName = PATH_TO_TAB[pathname] || pathname.split("/").pop() || "untitled";
+        const tabName = getTabName(pathname);
 
-        setOpenTabs((prev) => {
-            const existingTab = prev.find((t) => t.path === pathname);
-            // If tab exists, just return prev
-            if (existingTab) {
-                return prev;
-            }
-            // If no tabs exist, and we just landed (e.g. reload), we add it.
+        queueMicrotask(() => {
+            setOpenTabs((prev) => {
+                const existingTab = prev.find((t) => t.path === pathname);
+                // If tab exists, just return prev
+                if (existingTab) {
+                    return prev;
+                }
+                // If no tabs exist, and we just landed (e.g. reload), we add it.
 
-            return [...prev, { name: tabName, path: pathname }];
+                return [...prev, { name: tabName, path: pathname }];
+            });
         });
     }, [pathname]);
 
@@ -222,4 +236,3 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
 
     );
 }
-

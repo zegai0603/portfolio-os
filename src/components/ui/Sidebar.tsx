@@ -101,7 +101,7 @@ export function Sidebar({ activeView }: SidebarProps) {
                                     node.children = data.map(post => ({
                                         name: `${post.slug}.md`, // Show as .md file
                                         type: "file",
-                                        path: `/blog/${post.slug}`,
+                                        path: `/code/blog/${post.slug}`,
                                         icon: "markdown"
                                     }));
                                     return true;

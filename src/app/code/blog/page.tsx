@@ -8,10 +8,10 @@ Welcome to my blog! Here I write about software development, technology, and my 
 
 ## Recent Posts
 
-### [Hello World](/blog/hello-world)
-*January 21, 2024*
+### [Vibecoding this Portfolio](/code/blog/vibecoding-portfolio)
+*Seeded from Firestore*
 
-My first blog post - an introduction and what to expect from this blog.
+How this OS-like portfolio was built with Next.js, Firebase, Tailwind CSS, and AI agents.
 
 ---
 

@@ -9,7 +9,6 @@ const contactLinks = [
     { label: "mail", value: "\${config.email}", href: "mailto:\${config.email}" },
     { label: "github", value: "\${config.githubUsername}", href: "\${config.github}" },
     { label: "linkedin", value: "linkedin", href: "\${config.linkedin}" },
-    { label: "instagram", value: "\${config.instagramHandle}", href: "\${config.instagram}" },
 ].filter((c) => c.value && c.href);
 
 export default function Contacts({ onBack }: ContactsProps) {

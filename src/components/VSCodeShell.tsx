@@ -68,6 +68,12 @@ export function VSCodeShell({ children }: VSCodeShellProps) {
     // BUT specific edge case: Initial load with 0 tabs? 
     // Usually initial load has pathname, so we add tab.
 
+    // On phones the sidebar would squeeze the editor to a few characters wide: keep it closed
+    // on load and close it again after a file is opened.
+    useEffect(() => {
+        if (window.matchMedia("(max-width: 767px)").matches) queueMicrotask(() => setSidebarOpen(false));
+    }, [pathname]);
+
     // Add tab when navigating
     useEffect(() => {
         const tabName = getTabName(pathname);

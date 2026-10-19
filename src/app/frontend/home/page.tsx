@@ -30,7 +30,7 @@ export default function Home({ onNavigate }: HomeProps) {
                         projects
                     </button>
                     <span className="cli-arrow">→</span>
-                    <span className="cli-desc">GitHub repositories</span>
+                    <span className="cli-desc">featured projects</span>
                 </div>
 
                 <div className="cli-row">
@@ -59,7 +59,7 @@ export default function Home({ onNavigate }: HomeProps) {
                         contacts
                     </button>
                     <span className="cli-arrow">→</span>
-                    <span className="cli-desc">mail, github, linkedin, instagram</span>
+                    <span className="cli-desc">mail, github, linkedin</span>
                 </div>
             </div>
 

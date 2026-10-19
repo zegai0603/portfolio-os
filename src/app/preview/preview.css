@@ -259,20 +259,40 @@
 
 .cli-tree-item {
     display: flex;
-    flex-wrap: wrap;
+    align-items: baseline;
     gap: 0.5rem;
+    width: 100%;
+    background: none;
+    border: none;
+    font: inherit;
     color: var(--fg);
-    text-decoration: none;
-    padding: 0.25rem 0;
+    text-align: left;
+    cursor: pointer;
+    padding: 0.35rem 0.25rem;
     transition: background 100ms;
 }
 
-.cli-tree-item:hover {
+.cli-tree-item:hover,
+.cli-tree-item:focus-visible {
     background: rgba(255, 255, 255, 0.05);
+}
+
+.cli-tree-item:focus-visible,
+.cli-link:focus-visible,
+.cli-back:focus-visible {
+    outline: 1px solid var(--orange);
+    outline-offset: 2px;
 }
 
 .cli-tree-branch {
     color: var(--fg-dim);
+}
+
+.cli-tree-body {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.5rem;
+    min-width: 0;
 }
 
 .cli-tree-name {
@@ -285,73 +305,54 @@
     font-size: 0.85rem;
 }
 
-.cli-tree-stars {
-    color: var(--green);
-    font-size: 0.85rem;
-}
-
 .cli-tree-desc {
+    flex-basis: 100%;
     color: var(--fg-dim);
     font-size: 0.85rem;
 }
 
-/* SKILLS - HTOP STYLE */
-.cli-skills {
+/* PROJECT DETAIL */
+.cli-project {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.cli-skills-header {
-    display: grid;
-    grid-template-columns: 120px 1fr 80px;
-    gap: 1rem;
-    color: var(--fg-dim);
-    font-size: 0.8rem;
-    border-bottom: 1px solid var(--fg-dim);
-    padding-bottom: 0.25rem;
+.cli-highlights {
+    margin: 0.5rem 0;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    color: var(--fg);
 }
 
-.cli-skill-row {
-    display: grid;
-    grid-template-columns: 120px 1fr 80px;
-    gap: 1rem;
-    align-items: center;
-}
-
-.cli-skill-name {
+.cli-highlights li::marker {
+    content: "- ";
     color: var(--orange);
 }
 
-.cli-skill-bar-wrap {
+.cli-project-links {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 1.25rem;
 }
 
-.cli-skill-bar {
-    flex: 1;
-    height: 10px;
-    background: #1a1a1a;
-    border: 1px solid var(--fg-dim);
-    overflow: hidden;
+/* SKILLS */
+.cli-skill-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
-.cli-skill-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--green-dim), var(--green));
-    transition: width 400ms;
+.cli-skill-group {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1rem;
 }
 
-.cli-skill-pct {
-    color: var(--fg-dim);
-    font-size: 0.8rem;
-    min-width: 35px;
-}
-
-.cli-skill-status {
-    color: var(--green);
-    font-size: 0.8rem;
+.cli-skill-items {
+    color: var(--fg);
 }
 
 /* CONTACTS - NETSTAT STYLE */
@@ -444,22 +445,49 @@
         padding: 1.5rem;
     }
 
+    /* Leave room above for the fixed Code button. */
+    .cli-container {
+        height: auto;
+        max-height: calc(100dvh - 7rem);
+    }
+
+    /* Stack each home row: name on one line, its description indented below. */
     .cli-row {
-        grid-template-columns: 16px 90px 20px 1fr;
+        grid-template-columns: 16px 1fr;
+        row-gap: 0.15rem;
         font-size: 0.9rem;
+    }
+
+    .cli-arrow {
+        display: none;
+    }
+
+    .cli-desc {
+        grid-column: 2;
+        color: var(--fg-dim);
+        overflow-wrap: anywhere;
     }
 
     .cli-ascii {
         font-size: 0.35rem;
     }
 
-    .cli-skills-header,
-    .cli-skill-row {
-        grid-template-columns: 80px 1fr 60px;
+    .cli-skill-group {
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
     }
 
     .cli-contacts-header,
     .cli-contact-row {
-        grid-template-columns: 60px 1fr 80px;
+        grid-template-columns: 60px 1fr;
+    }
+
+    .cli-contacts-header span:last-child,
+    .cli-contact-state {
+        display: none;
+    }
+
+    .cli-contact-addr {
+        overflow-wrap: anywhere;
     }
 }

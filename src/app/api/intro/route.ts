@@ -14,7 +14,7 @@ export async function GET() {
         social: {
             github: config.github,
             linkedin: config.linkedin,
-            instagram: config.instagram,
+            resume: config.resumeUrl,
             email: config.email,
         },
     });

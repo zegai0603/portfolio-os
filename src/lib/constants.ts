@@ -80,8 +80,7 @@ Current Focus: ${config.currentFocus}`,
 
     contact: () => `Email: ${config.email}
 GitHub: ${config.github}
-LinkedIn: ${config.linkedin}
-Instagram: ${config.instagramHandle}`,
+LinkedIn: ${config.linkedin}${config.resumeUrl ? `\nResume: ${config.resumeUrl}` : ""}`,
 };
 
 // Directory contents for ls command
@@ -134,7 +133,6 @@ export function getIntroContent(): string {
         return {
             "github": "${config.github}",
             "linkedin": "${config.linkedin}",
-            "instagram": "${config.instagram}",
             "email": "${config.email}"
         }
     

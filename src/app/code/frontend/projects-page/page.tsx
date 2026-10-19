@@ -7,7 +7,6 @@ interface Project {
     name: string;
     description: string;
     language: string;
-    stars: number;
     url: string;
     topics: string[];
 }
@@ -33,7 +32,7 @@ export default function Projects({ onBack }: ProjectsProps) {
                 <span className="cli-tilde">~</span> <span className="cli-dollar">$</span> ls -a projects
             </div>
 
-            {loading && <div className="cli-loading">Fetching repositories...</div>}
+            {loading && <div className="cli-loading">Loading projects...</div>}
 
             {!loading && projects.length === 0 && (
                 <div className="cli-empty">No projects found.</div>
@@ -55,7 +54,6 @@ export default function Projects({ onBack }: ProjectsProps) {
                             </span>
                             <span className="cli-tree-name">{project.name}/</span>
                             <span className="cli-tree-lang">[{project.language}]</span>
-                            <span className="cli-tree-stars">★{project.stars}</span>
                             {project.description && (
                                 <span className="cli-tree-desc">- {project.description}</span>
                             )}

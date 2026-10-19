@@ -7,49 +7,29 @@ import { config } from "@/lib/config";
 import { SquareTerminal } from "lucide-react";
 import "@/app/preview/preview.css";
 import FaultyTerminal from "@/components/ui/FaultyTerminal";
+import { profile, type Project } from "@/lib/profile";
+import type { FileNode } from "@/lib/constants";
 
-interface Project {
-    name: string;
-    description: string;
-    language: string;
-    stars: number;
-    url: string;
-    topics: string[];
-}
-
-interface Skill {
-    name: string;
-    level: number;
-    status?: string;
-    memory_usage?: string;
-}
-
-type View = "home" | "about" | "projects" | "skills" | "contacts";
+type View = "home" | "about" | "projects" | "project" | "skills" | "contacts";
 
 const GRID_MUL: [number, number] = [2, 1];
+const projects = profile.projects;
+const skillGroups = profile.skillGroups;
 
 export function PreviewShell() {
     const router = useRouter();
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [skills, setSkills] = useState<Skill[]>([]);
     const [activeView, setActiveView] = useState<View>("home");
-    const [loadingProjects, setLoadingProjects] = useState(true);
-    const [loadingSkills, setLoadingSkills] = useState(true);
+    const [openProject, setOpenProject] = useState<Project | null>(null);
+
+    const showProject = (project: Project) => {
+        setOpenProject(project);
+        setActiveView("project");
+    };
 
     useEffect(() => {
-        fetch("/api/projects")
-            .then((r) => r.json())
-            .then((d) => setProjects(d.projects || []))
-            .finally(() => setLoadingProjects(false));
-
-        fetch("/api/skills")
-            .then((r) => r.json())
-            .then((d) => setSkills(d.skills || []))
-            .finally(() => setLoadingSkills(false));
-
         // Prefetch all code routes
         import("@/lib/constants").then(({ FILE_TREE }) => {
-            const prefetchNodes = (nodes: any[]) => {
+            const prefetchNodes = (nodes: FileNode[]) => {
                 nodes.forEach(node => {
                     if (node.type === "file" && node.path) {
                         router.prefetch(node.path);
@@ -67,7 +47,8 @@ export function PreviewShell() {
         const target = e.target as HTMLElement;
         if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
 
-        if (e.key === "Escape" || e.key === "h") setActiveView("home");
+        if (e.key === "Escape") setActiveView((v) => (v === "project" ? "projects" : "home"));
+        else if (e.key === "h") setActiveView("home");
         else if (e.key === "a") setActiveView("about");
         else if (e.key === "p") setActiveView("projects");
         else if (e.key === "s") setActiveView("skills");
@@ -79,14 +60,14 @@ export function PreviewShell() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [handleKeyDown]);
 
-    const languages = config.languages.filter(Boolean);
+    const languages = skillGroups[0]?.items ?? [];
     const hobbies = config.hobbies?.filter(Boolean) || [];
 
     const contactLinks = [
         { label: "mail", value: config.email, href: `mailto:${config.email}` },
         { label: "github", value: config.githubUsername, href: config.github },
-        { label: "linkedin", value: "linkedin", href: config.linkedin },
-        { label: "instagram", value: config.instagramHandle, href: config.instagram },
+        { label: "linkedin", value: config.linkedinHandle, href: config.linkedin },
+        { label: "resume", value: "resume.pdf", href: config.resumeUrl },
     ].filter((c) => c.value && c.href);
 
     // HOME - Main directory listing
@@ -115,7 +96,7 @@ export function PreviewShell() {
                     </button>
                     <span className="cli-arrow">→</span>
                     <span className="cli-desc">
-                        {loadingProjects ? "Loading..." : `${projects.length} repositories`}
+                        {projects.slice(0, 3).map((p) => p.name).join(", ")} and {projects.length - 3} more
                     </span>
                 </div>
 
@@ -125,9 +106,7 @@ export function PreviewShell() {
                         skills
                     </button>
                     <span className="cli-arrow">→</span>
-                    <span className="cli-desc">
-                        {languages.length > 0 ? languages.slice(0, 4).join(", ") : "Various technologies"}
-                    </span>
+                    <span className="cli-desc">{languages.slice(0, 4).join(", ")}</span>
                 </div>
 
                 <div className="cli-row">
@@ -221,36 +200,26 @@ export function PreviewShell() {
                 <span className="cli-tilde">~</span> <span className="cli-dollar">$</span> ls -a projects
             </div>
 
-            {loadingProjects && <div className="cli-loading">Fetching repositories...</div>}
-
-            {!loadingProjects && projects.length === 0 && (
-                <div className="cli-empty">No projects found.</div>
-            )}
-
-            {!loadingProjects && projects.length > 0 && (
-                <div className="cli-tree">
-                    <div className="cli-tree-header">projects/</div>
-                    {projects.map((project, i) => (
-                        <a
-                            key={project.name}
-                            href={project.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="cli-tree-item"
-                        >
-                            <span className="cli-tree-branch">
-                                {i === projects.length - 1 ? "└──" : "├──"}
-                            </span>
+            <div className="cli-tree">
+                <div className="cli-tree-header">projects/</div>
+                {projects.map((project, i) => (
+                    <button
+                        key={project.slug}
+                        type="button"
+                        onClick={() => showProject(project)}
+                        className="cli-tree-item"
+                    >
+                        <span className="cli-tree-branch">
+                            {i === projects.length - 1 ? "└──" : "├──"}
+                        </span>
+                        <span className="cli-tree-body">
                             <span className="cli-tree-name">{project.name}/</span>
-                            <span className="cli-tree-lang">[{project.language}]</span>
-                            <span className="cli-tree-stars">★{project.stars}</span>
-                            {project.description && (
-                                <span className="cli-tree-desc">- {project.description}</span>
-                            )}
-                        </a>
-                    ))}
-                </div>
-            )}
+                            <span className="cli-tree-lang">[{project.stack.slice(0, 3).join(", ")}]</span>
+                            <span className="cli-tree-desc">{project.tagline}</span>
+                        </span>
+                    </button>
+                ))}
+            </div>
 
             <button className="cli-back" onClick={() => setActiveView("home")}>
                 <span className="cli-tilde">~</span> <span className="cli-dollar">$</span> <span className="cli-back-cmd">cd .. [back]</span>
@@ -259,6 +228,53 @@ export function PreviewShell() {
         </div>
     );
 
+    // PROJECT - One project's detail, read like a README
+    const renderProject = () => {
+        const p = openProject;
+        if (!p) return renderProjects();
+        return (
+            <div className="cli-section">
+                <div className="cli-prompt">
+                    <span className="cli-tilde">~</span> <span className="cli-dollar">$</span> cat projects/{p.slug}/README.md
+                </div>
+
+                <div className="cli-project">
+                    <h2 className="cli-heading"># {p.name}</h2>
+                    <p className="cli-text">{p.tagline}</p>
+                    <p className="cli-text">
+                        <span className="cli-key">when:</span> {p.period}
+                        {p.role && <> · {p.role}</>}
+                    </p>
+                    <p className="cli-text">
+                        <span className="cli-key">stack:</span> {p.stack.join(", ")}
+                    </p>
+
+                    <ul className="cli-highlights">
+                        {p.highlights.map((h) => (
+                            <li key={h}>{h}</li>
+                        ))}
+                    </ul>
+
+                    {p.links.length > 0 && (
+                        <p className="cli-text cli-project-links">
+                            {p.links.map((l) => (
+                                <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer" className="cli-link">
+                                    {l.label} ↗
+                                </a>
+                            ))}
+                        </p>
+                    )}
+                    {p.note && <p className="cli-comment"># {p.note}</p>}
+                </div>
+
+                <button className="cli-back" onClick={() => setActiveView("projects")}>
+                    <span className="cli-tilde">~</span> <span className="cli-dollar">$</span> <span className="cli-back-cmd">cd .. [back to projects]</span>
+                    <span className="cli-cursor">▊</span>
+                </button>
+            </div>
+        );
+    };
+
     // SKILLS - Progress bars with terminal style
     const renderSkills = () => (
         <div className="cli-section">
@@ -266,52 +282,13 @@ export function PreviewShell() {
                 <span className="cli-tilde">~</span> <span className="cli-dollar">$</span> cat skills.md
             </div>
 
-            {loadingSkills && <div className="cli-loading">Loading processes...</div>}
-
-            {!loadingSkills && skills.length === 0 && languages.length === 0 && (
-                <div className="cli-empty">No skill data available.</div>
-            )}
-
-            <div className="cli-skills">
-                <div className="cli-skills-header">
-                    <span>SKILL</span>
-                    <span>LEVEL</span>
-                    <span>STATUS</span>
-                </div>
-
-                {skills.length > 0 ? (
-                    skills.map((skill) => (
-                        <div key={skill.name} className="cli-skill-row">
-                            <span className="cli-skill-name">{skill.name}</span>
-                            <div className="cli-skill-bar-wrap">
-                                <div className="cli-skill-bar">
-                                    <div
-                                        className="cli-skill-fill"
-                                        style={{ width: `${Math.round(skill.level * 100)}%` }}
-                                    />
-                                </div>
-                                <span className="cli-skill-pct">{Math.round(skill.level * 100)}%</span>
-                            </div>
-                            <span className="cli-skill-status">{skill.status || "active"}</span>
-                        </div>
-                    ))
-                ) : (
-                    languages.map((lang, i) => (
-                        <div key={lang} className="cli-skill-row">
-                            <span className="cli-skill-name">{lang}</span>
-                            <div className="cli-skill-bar-wrap">
-                                <div className="cli-skill-bar">
-                                    <div
-                                        className="cli-skill-fill"
-                                        style={{ width: `${90 - i * 10}%` }}
-                                    />
-                                </div>
-                                <span className="cli-skill-pct">{90 - i * 10}%</span>
-                            </div>
-                            <span className="cli-skill-status">active</span>
-                        </div>
-                    ))
-                )}
+            <div className="cli-skill-groups">
+                {skillGroups.map((g) => (
+                    <div key={g.group} className="cli-skill-group">
+                        <span className="cli-key">{g.group.toLowerCase()}:</span>
+                        <span className="cli-skill-items">{g.items.join(", ")}</span>
+                    </div>
+                ))}
             </div>
 
             <button className="cli-back" onClick={() => setActiveView("home")}>
@@ -373,6 +350,7 @@ export function PreviewShell() {
         switch (activeView) {
             case "about": return renderAbout();
             case "projects": return renderProjects();
+            case "project": return renderProject();
             case "skills": return renderSkills();
             case "contacts": return renderContacts();
             default: return renderHome();
@@ -380,7 +358,7 @@ export function PreviewShell() {
     };
 
     return (
-        <div className="relative w-full h-full min-h-[600px] overflow-hidden flex items-center justify-center p-8 bg-black/50">
+        <div className="relative w-full h-full min-h-[600px] overflow-hidden flex items-center justify-center p-4 sm:p-8 bg-black/50">
             {/* Background */}
             <div className="absolute inset-0 z-0">
                 <FaultyTerminal
@@ -408,7 +386,8 @@ export function PreviewShell() {
             <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
                 <div className="cli-root !bg-transparent w-full h-full pointer-events-auto">
                     <div className="cli-container">
-                        <div className="cli-content-scroll">
+                        {/* keyed so each view opens scrolled to the top */}
+                        <div className="cli-content-scroll" key={activeView + (openProject?.slug ?? "")}>
                             {renderContent()}
                         </div>
                     </div>

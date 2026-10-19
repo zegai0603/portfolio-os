@@ -1,27 +1,13 @@
 import { NextResponse } from 'next/server';
-import { config } from '@/lib/config';
-import { fetchGitHubRepos } from '@/lib/github';
+import { profile } from '@/lib/profile';
 
-// GET - Return projects from GitHub
+// GET - Return the curated project list
 export async function GET() {
-    const repos = await fetchGitHubRepos(config.githubUsername);
-
-    const projects = repos.map((repo) => ({
-        name: repo.name,
-        description: repo.description || "No description",
-        language: repo.language || "Unknown",
-        stars: repo.stargazers_count,
-        url: repo.html_url,
-        homepage: repo.homepage,
-        topics: repo.topics,
-        last_updated: repo.pushed_at,
-    }));
-
     return NextResponse.json({
-        projects,
+        projects: profile.projects,
         meta: {
-            total: projects.length,
-            source: "github",
+            total: profile.projects.length,
+            source: "profile",
         },
     });
 }

@@ -1,5 +1,6 @@
 import { config } from "./config";
 import { getIntroContent } from "./constants";
+import { profile } from "./profile";
 
 export { getIntroContent };
 
@@ -52,30 +53,9 @@ There's a bunch of other easter eggs in this webapp, go discover them!
 }
 
 export function getSkillsContent(): string {
-  const skillsData = config.skillsData.length > 0
-    ? config.skillsData
-    : config.languages.map((lang, index) => ({
-      name: lang,
-      level: Math.max(95 - (index * 5), 50),
-      status: index < 3 ? "Stable" : "Active",
-      memory_usage: "Low",
-    }));
+  const groups = Object.fromEntries(config.skillGroups.map((g) => [g.group, g.items]));
 
-  const skillsArray = skillsData.map((s: { name: string; level: number; status?: string; memory_usage?: string }) => ({
-    name: s.name,
-    level: s.level,
-    status: s.status || "Active",
-    memory_usage: s.memory_usage || "Medium"
-  }));
-
-  return `// skills.ts - Developer Skillset Telemetry
-
-interface Skill {
-  name: string;
-  level: number;        // 0-100 proficiency
-  status: "Stable" | "Active" | "Experimental";
-  memory_usage: "Low" | "Medium" | "High";
-}
+  return `// skills.ts - what I build with
 
 export const developer = {
   name: "${config.name}",
@@ -83,18 +63,23 @@ export const developer = {
   current_focus: "${config.currentFocus}"
 };
 
-export const skills: Skill[] = ${JSON.stringify(skillsArray, null, 2)};
+export const skills: Record<string, string[]> = ${JSON.stringify(groups, null, 2)};
 
 export const hobbies: string[] = ${JSON.stringify(config.hobbies, null, 2)};
-
-// Process telemetry
-export function getSkillReport(): string {
-  return skills
-    .sort((a, b) => b.level - a.level)
-    .map(s => \`[\${s.status.padEnd(12)}] \${s.name}: \${s.level}%\`)
-    .join("\\n");
-}
 `;
+}
+
+export function getProjectsContent(): string {
+  return JSON.stringify(
+    {
+      projects: profile.projects.map(({ name, tagline, role, period, stack, highlights, links }) => ({
+        name, tagline, ...(role ? { role } : {}), period, stack, highlights,
+        links: Object.fromEntries(links.map((l) => [l.label, l.url])),
+      })),
+    },
+    null,
+    2
+  );
 }
 
 export function getContactContent(): string {
@@ -102,45 +87,27 @@ export function getContactContent(): string {
 
 ## Get in Touch
 
-I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+I'm looking for **2027 software engineering internships**. Drop me an email and I'll get back to you quickly.
 
 ---
 
 ## Email
 **${config.email}**
 
-Drop me an email and I'll get back to you as soon as possible.
-
 ---
 
-## Social Links
+## Links
 
 | Platform | Link |
 |----------|------|
 | GitHub | [${config.githubUsername}](${config.github}) |
-| LinkedIn | [LinkedIn Profile](${config.linkedin}) |
-| Instagram | [${config.instagramHandle}](${config.instagram}) |
-
----
-
-## Open to Opportunities
-
-- **Full-time positions**
-- **Freelance projects**
-- **Open source collaboration**
-- **Technical consulting**
-
+| LinkedIn | [${config.linkedinHandle}](${config.linkedin}) |
+${config.resumeUrl ? `| Resume | [resume.pdf](${config.resumeUrl}) |\n` : ""}
 ---
 
 ## Location
 
 Based in **${config.location}**
-
-_Available for remote work worldwide._
-
----
-
-> "The best way to predict the future is to create it." - Peter Drucker
 `;
 }
 
@@ -306,13 +273,12 @@ export function Home() {
 }`,
   "/frontend/Projects.tsx": `"use client";
 import { useEffect, useState } from 'react';
-import { Folder, Star } from 'lucide-react';
+import { Folder } from 'lucide-react';
 
 interface Project {
   name: string;
   description: string;
   language: string;
-  stars: number;
   url: string;
   topics: string[];
 }
@@ -353,10 +319,6 @@ export function Projects({ projects: initialProjects = [] }: { projects?: Projec
               <div className="flex items-start justify-between mb-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400/20 to-purple-400/20 flex items-center justify-center text-cyan-400">
                   <Folder size={24} />
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <Star size={16} className="text-yellow-500" />
-                  <span>{project.stars}</span>
                 </div>
               </div>
               <h3 className="text-lg font-semibold mb-2 group-hover:text-cyan-400 transition-colors">
@@ -450,14 +412,13 @@ export function Skills({ skills: initialSkills = [] }: { skills?: Skill[] }) {
 }`,
   "/frontend/Contact.tsx": `"use client";
 import { config } from '@/lib/config';
-import { Mail, Github, Linkedin, Instagram, MapPin } from 'lucide-react';
+import { Mail, Github, Linkedin, MapPin } from 'lucide-react';
 
 export function Contact() {
   const links = [
     { icon: <Mail className="w-6 h-6" />, label: "Email", value: config.email, href: \`mailto:\${config.email}\` },
     { icon: <Github className="w-6 h-6" />, label: "GitHub", value: config.githubUsername, href: config.github },
-    { icon: <Linkedin className="w-6 h-6" />, label: "LinkedIn", value: "Connect", href: config.linkedin },
-    { icon: <Instagram className="w-6 h-6" />, label: "Instagram", value: config.instagramHandle, href: config.instagram },
+    { icon: <Linkedin className="w-6 h-6" />, label: "LinkedIn", value: config.linkedinHandle, href: config.linkedin },
   ];
 
   return (
@@ -469,7 +430,7 @@ export function Contact() {
             Let&apos;s Connect
           </h2>
           <p className="text-gray-500 mt-4">
-            Open to collaborations, freelance projects, and new opportunities
+            Looking for 2027 software engineering internships
           </p>
         </div>
 
@@ -494,7 +455,7 @@ export function Contact() {
         </div>
 
         <p className="mt-12 text-gray-600 text-sm flex items-center justify-center gap-2">
-          <MapPin size={16} /> Based in {config.location || "Earth"} • Available worldwide
+          <MapPin size={16} /> Based in {config.location}
         </p>
       </div>
     </section>
@@ -540,6 +501,7 @@ export function getAllSearchableContent(): Record<string, string> {
   return {
     "/intro.py": getIntroContent(),
     "/skills.ts": getSkillsContent(),
+    "/projects.json": getProjectsContent(),
     "/contact.md": getContactContent(),
     ...FRONTEND_FILES
   };

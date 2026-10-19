@@ -98,8 +98,6 @@ export function StatusBar({ currentPath, onToggleProblems, onToggleCopilot, prob
     const [lineEndingModalOpen, setLineEndingModalOpen] = useState(false);
 
     const language = getLanguageFromPath(currentPath);
-    const errorCount = QUIRKY_PROBLEMS.filter(p => p.type === "error").length;
-    const warningCount = QUIRKY_PROBLEMS.filter(p => p.type === "warning").length;
 
     const handleGitBranchClick = () => {
         if (config.github) {
@@ -127,12 +125,9 @@ export function StatusBar({ currentPath, onToggleProblems, onToggleCopilot, prob
                         className={`flex items-center gap-1 hover:bg-white/10 px-1 py-0.5 rounded transition-colors ${problemsOpen ? 'bg-white/10' : ''}`}
                         title="View Problems"
                     >
-                        <>
-                            <AlertCircle size={12} className={errorCount > 0 ? "text-red-300" : ""} />
-                            <span className={errorCount > 0 ? "text-red-300" : ""}>{errorCount}</span>
-                            <AlertTriangle size={12} className={warningCount > 0 ? "text-yellow-300" : ""} />
-                            <span className={warningCount > 0 ? "text-yellow-300" : ""}>{warningCount}</span>
-                        </>
+                        {/* Easter egg: icons only, so a quick glance doesn't read as real build errors */}
+                        <AlertCircle size={12} />
+                        <AlertTriangle size={12} />
                     </button>
                 </div>
 

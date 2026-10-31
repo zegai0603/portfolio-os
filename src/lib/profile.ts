@@ -205,6 +205,6 @@ export const items: Item[] = [
             "FinBERT first, escalating only uncertain or high-impact posts to an LLM",
         ],
         links: [],
-        note: "The code is no longer available.",
+        note: `University team project. ${NOT_PUBLIC}`,
     },
 ];

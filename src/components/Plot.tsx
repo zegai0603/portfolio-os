@@ -31,8 +31,9 @@ const LANES = (
 ).filter(([lane]) => items.some((i) => i.lane === lane));
 const ROWS = [...items].sort((a, b) => startOf(b) - startOf(a));
 const HEADER_HEIGHT = 44;
+// Phones keep full-size touch targets; desktop rows stay tight so the plot and dial fit one window.
 const ROW_HEIGHT = 44;
-// Rows share out the height the plot is given, so it fits the window on desktop.
+const DESKTOP_ROW_HEIGHT = 32;
 const rowHeight = `calc((100% - ${HEADER_HEIGHT}px) / ${ROWS.length})`;
 // The plot's shaded grid marks the rows from before this year.
 const FIRST_OLD_ROW = ROWS.findIndex((i) => startOf(i) < YEAR_2026);
@@ -132,7 +133,7 @@ function Dial({ sel }: { sel: Item }) {
                     key={i.id}
                     d={arcOf(i)}
                     fill="none"
-                    stroke={i === sel ? "#ffffff" : ranAlongside(i) ? "var(--color-muted)" : "var(--color-line)"}
+                    stroke={i === sel ? "var(--color-accent)" : ranAlongside(i) ? "var(--color-muted)" : "var(--color-line)"}
                     strokeWidth={i === sel ? 3 : 1.5}
                     strokeLinecap="square"
                 />
@@ -173,12 +174,17 @@ export function Plot() {
     return (
         <section
             id="plot"
-            className="mx-auto grid w-full max-w-[1240px] min-h-0 flex-1 gap-10 px-5 pt-12 pb-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-14 lg:pt-8 lg:pb-5"
+            className="mx-auto grid w-full max-w-[1240px] min-h-0 flex-1 gap-10 px-5 pt-12 pb-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-14 lg:pt-8 lg:pb-5"
         >
             <div className="flex min-h-0 flex-col gap-6">
                 <div
-                    className="board relative h-(--plot-height) w-full border-y border-line lg:h-auto lg:min-h-0 lg:flex-1"
-                    style={{ "--plot-height": `${HEADER_HEIGHT + ROWS.length * ROW_HEIGHT}px`, "--rows": ROWS.length, "--old-row": FIRST_OLD_ROW } as CSSProperties}
+                    className="board relative h-(--plot-height) w-full shrink-0 border-y border-line lg:h-(--plot-height-lg)"
+                    style={{
+                        "--plot-height": `${HEADER_HEIGHT + ROWS.length * ROW_HEIGHT}px`,
+                        "--plot-height-lg": `${HEADER_HEIGHT + ROWS.length * DESKTOP_ROW_HEIGHT}px`,
+                        "--rows": ROWS.length,
+                        "--old-row": FIRST_OLD_ROW,
+                    } as CSSProperties}
                     onMouseLeave={() => setPeek(null)}
                 >
                     {[ROWS[0], ROWS[FIRST_OLD_ROW]].map((i) => (
@@ -241,7 +247,7 @@ export function Plot() {
                         );
                     })}
                 </div>
-                <div className="dial-grid flex justify-center border-y border-line py-2.5">
+                <div className="flex justify-center">
                     <Dial sel={sel} />
                 </div>
             </div>

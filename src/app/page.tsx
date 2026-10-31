@@ -19,7 +19,7 @@ export default function HomePage() {
                 <a href="#plot" className="absolute bottom-7 inline-flex min-h-11 items-center text-white hover:text-accent">Explore ↓</a>
             </section>
 
-            <div className="flex flex-col lg:h-svh lg:min-h-[940px]">
+            <div className="flex flex-col lg:h-svh lg:min-h-[860px]">
                 <Plot />
 
                 <footer className="mx-auto w-full max-w-[1240px] px-5 pb-10 lg:pb-3">

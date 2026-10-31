@@ -40,14 +40,6 @@ a:focus-visible {
   transition: left var(--glide), width var(--glide);
 }
 
-/* The crosshair: dashed orange on the plot and on the dial */
-.xh {
-  position: absolute;
-  pointer-events: none;
-  border: 0 dashed var(--color-accent);
-  transition: left var(--glide), top var(--glide);
-}
-
 /* Corner brackets around the point in focus */
 .frame {
   width: 26px;
@@ -96,18 +88,6 @@ a:focus-visible {
   transition: translate var(--glide);
 }
 
-.dial-cross {
-  fill: none;
-  stroke: var(--color-accent);
-  stroke-width: 0.8;
-  stroke-dasharray: 4 3;
-  transition: r var(--glide), transform var(--glide);
-}
-
-.hand {
-  transform-origin: 160px 160px;
-}
-
 .dial-text {
   fill: var(--color-muted);
   font-size: 10px;
@@ -118,10 +98,8 @@ a:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .lane,
-  .xh,
   .frame,
-  .sheet,
-  .dial-cross {
+  .sheet {
     transition: none;
   }
 

@@ -167,7 +167,7 @@ export function Plot() {
     };
 
     return (
-        <section id="plot" className="mx-auto grid max-w-[1240px] items-start gap-10 px-5 pt-12 pb-10 lg:grid-cols-[420px_minmax(0,1fr)] lg:gap-14">
+        <section id="plot" className="mx-auto grid w-full max-w-[1240px] items-start gap-10 px-5 pt-12 pb-10 lg:grid-cols-[420px_minmax(0,1fr)] lg:gap-14">
             <div className="flex flex-col items-center gap-10">
                 <div
                     className="board relative w-full border-y border-line"

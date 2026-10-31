@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type CSSProperties } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import { axis, items, type Item, type Lane } from "@/lib/profile";
 
 const monthIndex = (ym: string) => {
@@ -19,7 +19,8 @@ const startLabel = (i: Item) => {
     return new Date(Date.UTC(year, month - 1)).toLocaleString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
 };
 
-// The plot runs down the page, newest first: each item has its own row, and its column is its lane.
+// The plot runs down the page, newest first: each item has its own row, and each lane is a column.
+// Only one lane is open at a time. Closed lanes show their points alone, with no labels or dates.
 // A lane appears with its first item.
 const LANES = (
     [
@@ -29,11 +30,18 @@ const LANES = (
     ] as [Lane, string][]
 ).filter(([lane]) => items.some((i) => i.lane === lane));
 const ROWS = [...items].sort((a, b) => startOf(b) - startOf(a));
-const HEADER_HEIGHT = 28;
+const HEADER_HEIGHT = 44;
 const ROW_HEIGHT = 44;
-const FIRST_LANE_X = 60;
-const LANE_GAP = 44;
-const laneX = (lane: Lane) => FIRST_LANE_X + LANES.findIndex(([id]) => id === lane) * LANE_GAP;
+const DATE_WIDTH = 54;
+const CLOSED_WIDTH = 44;
+const POINT_X = 16;
+const rowTop = (i: Item) => HEADER_HEIGHT + ROWS.indexOf(i) * ROW_HEIGHT;
+const laneIndex = (lane: Lane) => LANES.findIndex(([id]) => id === lane);
+// Lanes before the open one stack on the left, and lanes after it stack on the right.
+const laneLeft = (index: number, open: number, offset = 0) =>
+    index <= open ? `${DATE_WIDTH + index * CLOSED_WIDTH + offset}px` : `calc(100% - ${(LANES.length - index) * CLOSED_WIDTH - offset}px)`;
+const laneWidth = (index: number, open: number) =>
+    index === open ? `calc(100% - ${DATE_WIDTH + (LANES.length - 1) * CLOSED_WIDTH}px)` : `${CLOSED_WIDTH}px`;
 
 // The dial shows the same items as a circle: month sets the angle, and each project keeps its own ring.
 const CENTRE = 160;
@@ -139,67 +147,116 @@ function Dial({ sel }: { sel: Item }) {
 
 export function Plot() {
     const [picked, setPicked] = useState("factory");
+    const [peek, setPeek] = useState<Lane | null>(null);
+    const [sheetOpen, setSheetOpen] = useState(false);
+    const backButton = useRef<HTMLButtonElement>(null);
+    const lastRow = useRef<HTMLElement>(null);
     const sel = items.find((i) => i.id === picked) ?? items[0];
-    const selRow = ROWS.indexOf(sel);
+    const openLane = peek ?? sel.lane;
+    const open = laneIndex(openLane);
 
-    // On phones the details open under the row, so the tapped row can move: keep it on screen.
+    // On desktop the details are already beside the plot, so the phone sheet stays hidden.
     const pick = (id: string, row: HTMLElement) => {
         setPicked(id);
-        requestAnimationFrame(() => row.scrollIntoView({ block: "nearest" }));
+        setPeek(null);
+        setSheetOpen(true);
+        lastRow.current = row;
+        requestAnimationFrame(() => backButton.current?.focus());
+    };
+    const closeSheet = () => {
+        setSheetOpen(false);
+        lastRow.current?.focus();
     };
 
     return (
         <section id="plot" className="mx-auto grid max-w-[1240px] items-start gap-10 px-5 pt-12 pb-10 lg:grid-cols-[420px_minmax(0,1fr)] lg:gap-14">
-            <div className="flex flex-col items-center gap-10">
-                <div className="relative w-full border-y border-line">
-                    <div className="relative" style={{ height: HEADER_HEIGHT }}>
-                        {LANES.map(([lane, label]) => (
-                            <span key={lane} className="absolute top-1.5 -translate-x-1/2 text-[10px]" style={{ left: laneX(lane) }}>{label}</span>
-                        ))}
-                    </div>
-                    {LANES.map(([lane]) => (
-                        <span key={lane} className="absolute bottom-0 w-px bg-faint" style={{ left: laneX(lane), top: HEADER_HEIGHT }} />
-                    ))}
-                    <span className="xh bottom-0" style={{ left: laneX(sel.lane), top: HEADER_HEIGHT, borderLeftWidth: 1 }} />
-                    <span className="xh inset-x-0" style={{ top: HEADER_HEIGHT + selRow * ROW_HEIGHT + ROW_HEIGHT / 2, borderTopWidth: 1 }} />
-                    {ROWS.map((i) => {
-                        const selected = i === sel;
-                        const x = laneX(i.lane);
-                        return (
-                            <div key={i.id}>
-                                <button
-                                    type="button"
-                                    aria-pressed={selected}
-                                    onClick={(e) => pick(i.id, e.currentTarget)}
-                                    className="group relative block w-full cursor-pointer"
-                                    style={{ height: ROW_HEIGHT }}
-                                >
-                                    <span className="absolute top-1/2 left-0 -translate-y-1/2 text-[10px]">{startLabel(i)}</span>
-                                    <span
-                                        className={`absolute top-1/2 block -translate-x-1/2 -translate-y-1/2 border border-white group-hover:bg-white ${selected ? "size-3.5 bg-white" : "size-2.5 bg-black"}`}
-                                        style={{ left: x }}
-                                    />
-                                    <span className="absolute inset-y-0 right-0 flex min-w-0 items-center" style={{ left: x + 12 }}>
-                                        <span className={`truncate bg-black px-1 text-xs group-hover:text-white ${selected ? "text-white" : "text-muted"}`}>{i.name}</span>
-                                    </span>
-                                </button>
-                                {selected && (
-                                    <div className="relative bg-black py-5 lg:hidden">
-                                        <Details item={i} />
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-                <div className="lg:hidden">
-                    <Dial sel={sel} />
-                </div>
+            <div
+                className="board relative w-full border-y border-line"
+                style={{ height: HEADER_HEIGHT + ROWS.length * ROW_HEIGHT }}
+                onMouseLeave={() => setPeek(null)}
+            >
+                <span className="xh bottom-0" style={{ left: laneLeft(laneIndex(sel.lane), open, POINT_X), top: HEADER_HEIGHT, borderLeftWidth: 1 }} />
+                <span className="xh inset-x-0" style={{ top: rowTop(sel) + ROW_HEIGHT / 2, borderTopWidth: 1 }} />
+                {ROWS.map((i) => (
+                    <span
+                        key={i.id}
+                        className={`absolute left-0 -translate-y-1/2 bg-black pr-1 text-[10px] transition-opacity duration-150 ${i.lane === openLane || i === sel ? "" : "opacity-0"}`}
+                        style={{ top: rowTop(i) + ROW_HEIGHT / 2 }}
+                    >
+                        {startLabel(i)}
+                    </span>
+                ))}
+                {LANES.map(([lane, label], index) => {
+                    const isOpen = index === open;
+                    return (
+                        <div
+                            key={lane}
+                            className="lane absolute inset-y-0"
+                            style={{ left: laneLeft(index, open), width: laneWidth(index, open) }}
+                            onMouseEnter={() => setPeek(lane)}
+                            onFocus={() => setPeek(lane)}
+                        >
+                            <span className="absolute bottom-0 w-px bg-faint" style={{ left: POINT_X, top: HEADER_HEIGHT }} />
+                            <button
+                                type="button"
+                                aria-expanded={isOpen}
+                                onClick={() => setPeek(lane)}
+                                className={`absolute top-0 flex cursor-pointer items-center gap-1.5 text-[10px] whitespace-nowrap hover:text-white ${index > open ? "right-0" : "left-0"} ${isOpen ? "text-white" : ""}`}
+                                style={{ height: HEADER_HEIGHT }}
+                            >
+                                {label} <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
+                            </button>
+                            {ROWS.filter((i) => i.lane === lane).map((i) => {
+                                const selected = i === sel;
+                                return (
+                                    <button
+                                        key={i.id}
+                                        type="button"
+                                        aria-pressed={selected}
+                                        onClick={(e) => pick(i.id, e.currentTarget)}
+                                        className="group absolute inset-x-0 cursor-pointer"
+                                        style={{ top: rowTop(i), height: ROW_HEIGHT }}
+                                    >
+                                        <span
+                                            className={`absolute top-1/2 block -translate-x-1/2 -translate-y-1/2 border border-white group-hover:bg-white ${selected ? "size-3.5 bg-white" : "size-2.5 bg-black"}`}
+                                            style={{ left: POINT_X }}
+                                        />
+                                        <span className={`frame absolute top-1/2 -translate-x-1/2 -translate-y-1/2 ${selected ? "frame-on" : ""}`} style={{ left: POINT_X }} />
+                                        <span className="absolute inset-y-0 right-0 flex min-w-0 items-center" style={{ left: POINT_X + 14 }}>
+                                            <span className={`truncate bg-black pr-1 text-xs transition-opacity duration-150 group-hover:text-white ${isOpen ? "" : "opacity-0"} ${selected ? "text-white" : "text-muted"}`}>
+                                                {i.name}
+                                            </span>
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    );
+                })}
             </div>
 
             <div aria-live="polite" className="sticky top-8 hidden flex-col gap-8 lg:flex">
-                <Details item={sel} />
+                <div key={sel.id} className="swap">
+                    <Details item={sel} />
+                </div>
                 <Dial sel={sel} />
+            </div>
+
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-label={sel.name}
+                inert={!sheetOpen}
+                onKeyDown={(e) => e.key === "Escape" && closeSheet()}
+                className={`sheet fixed inset-0 z-20 overflow-y-auto overscroll-contain bg-black px-5 pb-10 lg:hidden ${sheetOpen ? "" : "translate-x-full"}`}
+            >
+                <button ref={backButton} type="button" onClick={closeSheet} className="inline-flex min-h-11 cursor-pointer items-center text-xs text-white">← Back</button>
+                <div key={sel.id} className="swap mt-2">
+                    <Details item={sel} />
+                </div>
+                <div className="mt-8 flex justify-center">
+                    <Dial sel={sel} />
+                </div>
             </div>
         </section>
     );

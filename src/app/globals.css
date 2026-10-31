@@ -31,11 +31,69 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+/* The plot: every move between points shares one glide */
+:root {
+  --glide: 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lane {
+  transition: left var(--glide), width var(--glide);
+}
+
 /* The crosshair: dashed orange on the plot and on the dial */
 .xh {
   position: absolute;
+  pointer-events: none;
   border: 0 dashed var(--color-accent);
-  transition: left 0.25s, top 0.25s;
+  transition: left var(--glide), top var(--glide);
+}
+
+/* Corner brackets around the point in focus */
+.frame {
+  width: 26px;
+  height: 26px;
+  pointer-events: none;
+  opacity: 0;
+  scale: 1.35;
+  transition: opacity 0.12s linear, scale 0.12s linear;
+  background:
+    linear-gradient(#fff, #fff) 0 0 / 6px 1px, linear-gradient(#fff, #fff) 0 0 / 1px 6px,
+    linear-gradient(#fff, #fff) 100% 0 / 6px 1px, linear-gradient(#fff, #fff) 100% 0 / 1px 6px,
+    linear-gradient(#fff, #fff) 0 100% / 6px 1px, linear-gradient(#fff, #fff) 0 100% / 1px 6px,
+    linear-gradient(#fff, #fff) 100% 100% / 6px 1px, linear-gradient(#fff, #fff) 100% 100% / 1px 6px;
+  background-repeat: no-repeat;
+}
+
+.group:hover .frame,
+.group:focus-visible .frame,
+.frame-on {
+  opacity: 1;
+  scale: 1;
+}
+
+/* Hovering a point fades the others */
+.board button[aria-pressed] {
+  transition: opacity 0.12s linear;
+}
+
+.board:has(button[aria-pressed]:hover) button[aria-pressed]:not(:hover) {
+  opacity: 0.4;
+}
+
+/* Details swap in when the selection changes */
+.swap {
+  animation: swap 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+.sheet {
+  transition: translate var(--glide);
 }
 
 .dial-cross {
@@ -43,7 +101,7 @@ a:focus-visible {
   stroke: var(--color-accent);
   stroke-width: 0.8;
   stroke-dasharray: 4 3;
-  transition: r 0.25s, transform 0.25s;
+  transition: r var(--glide), transform var(--glide);
 }
 
 .hand {
@@ -59,8 +117,15 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .lane,
   .xh,
+  .frame,
+  .sheet,
   .dial-cross {
     transition: none;
+  }
+
+  .swap {
+    animation: none;
   }
 }

@@ -16,17 +16,21 @@ const startOf = (i: Item) => monthIndex(i.start);
 const endOf = (i: Item) => (i.end === "present" ? TO : i.end ? monthIndex(i.end) + 1 : startOf(i));
 
 // The plot: x is the start month. Projects takes two rows because several start in the same month.
+// The Blogs row appears with the first post.
+const HAS_POSTS = items.some((i) => i.lane === "blogs");
+const [WORK_Y, PROJECTS_Y, LOWER_Y] = HAS_POSTS ? [16, 40, 58] : [22, 48, 70];
+const BLOGS_Y = 84;
 const ROWS = [
-    { label: "WORK", y: 16 },
-    { label: "PROJECTS", y: 40 },
-    { label: "", y: 58 },
-    { label: "BLOGS", y: 84 },
+    { label: "WORK", y: WORK_Y },
+    { label: "PROJECTS", y: PROJECTS_Y },
+    { label: "", y: LOWER_Y },
+    ...(HAS_POSTS ? [{ label: "BLOGS", y: BLOGS_Y }] : []),
 ];
 const LOWER_ROW = ["geo", "prize", "ctx", "factory"];
 // Labels sit above their point unless a neighbour's label would hit them.
 const LABEL_BELOW = ["fly", "ctx"];
 const xOf = (m: number) => 3 + ((m - FROM) / (TO - FROM)) * 94;
-const yOf = (i: Item) => (i.lane === "work" ? 16 : i.lane === "blogs" ? 84 : LOWER_ROW.includes(i.id) ? 58 : 40);
+const yOf = (i: Item) => (i.lane === "work" ? WORK_Y : i.lane === "blogs" ? BLOGS_Y : LOWER_ROW.includes(i.id) ? LOWER_Y : PROJECTS_Y);
 
 // The dial is the same plot as a circle: month sets the angle, and each project keeps its own ring.
 const CENTRE = 160;
@@ -47,7 +51,7 @@ const RING_LABELS = (
         ["projects", "PROJECTS"],
         ["blogs", "BLOGS"],
     ] as [Lane, string][]
-).map(([lane, label]) => {
+).filter(([lane]) => items.some((i) => i.lane === lane)).map(([lane, label]) => {
     const first = nextRing;
     items
         .filter((i) => i.lane === lane && i.end)

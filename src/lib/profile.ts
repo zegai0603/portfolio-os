@@ -205,14 +205,4 @@ export const items: Item[] = [
         links: [],
         note: PRIVATE,
     },
-    {
-        id: "vibe",
-        lane: "blogs",
-        name: "Vibecoding this Portfolio",
-        when: "May 2026",
-        what: "How the first version of this site was built with Next.js, Firebase, Tailwind CSS and AI agents.",
-        start: "2026-05",
-        bits: [],
-        links: [{ label: "Read", url: "/blog/vibecoding-portfolio" }],
-    },
 ];

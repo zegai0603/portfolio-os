@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 // Pages from the old terminal site, so old links still land somewhere.
-const OLD_PAGES = ["/code/:path*", "/frontend/:path*", "/preview", "/projects", "/skills", "/contact", "/intro", "/readme", "/blog"];
+const OLD_PAGES = ["/code/:path*", "/frontend/:path*", "/preview", "/projects", "/skills", "/contact", "/intro", "/readme", "/blog", "/blog/vibecoding-portfolio"];
 
 const nextConfig: NextConfig = {
   reactCompiler: true,

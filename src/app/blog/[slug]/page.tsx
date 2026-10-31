@@ -13,7 +13,7 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
     const files = await readdir(POSTS);
-    return files.map((file) => ({ slug: file.replace(/\.md$/, "") }));
+    return files.filter((file) => file.endsWith(".md")).map((file) => ({ slug: file.replace(/\.md$/, "") }));
 }
 
 const readPost = (slug: string) => readFile(join(POSTS, `${slug}.md`), "utf8").catch(() => notFound());

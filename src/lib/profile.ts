@@ -30,7 +30,7 @@ export const contact = {
 export const axis = { from: "2025-06", to: "2026-11" };
 
 const COMPANY = "Company code, so there is no public repo.";
-const PRIVATE = "The code is in a private repo.";
+const NOT_PUBLIC = "The code isn't public.";
 
 export const items: Item[] = [
     {
@@ -38,13 +38,13 @@ export const items: Item[] = [
         lane: "work",
         name: "Flycatcher",
         when: "Software Engineering Intern, Aug 2025 – Oct 2026",
-        what: "Built the systems behind 10,000+ bots.",
+        what: "Built systems behind 10,000+ bots.",
         start: "2025-08",
         end: "2026-10",
         bits: [
             "Built taskgen, a sandboxed rule runtime, so operators change bot behaviour without a redeploy",
             "Built a scheduler timing 10,000+ bots’ weekly actions",
-            "Built a preflop poker solver gaining +2.5–3.4 BB/100 per seat",
+            "Built a preflop poker solver gaining +2.5–3.4 BB/100 per seat over the previous checkpoint",
         ],
         links: [],
         note: COMPANY,
@@ -54,11 +54,12 @@ export const items: Item[] = [
         lane: "work",
         name: "AIRAP",
         when: "Software Engineering Intern, Jun – Jul 2026",
-        what: "Shipped for real customers and staff, on code I inherited.",
+        what: "A guest storefront, quote pricing and an inherited staff app.",
         start: "2026-06",
         end: "2026-07",
         bits: [
-            "Built a liquor storefront for 1,228 products with Stripe checkout and age checks",
+            "Built a liquor storefront over a 1,228-product catalogue with Stripe checkout and age checks",
+            "Checkout re-prices every order on the server and reserves stock before handing off to Stripe",
             "Built quote pricing with sign-off for loss-making quotes",
             "Maintained a React Native app and 4 web portals used by up to 30 staff",
         ],
@@ -75,7 +76,7 @@ export const items: Item[] = [
         end: "2025-08",
         bits: [
             "Built a parallel scraper that skipped page rendering to collect 100,000+ listings a day",
-            "Built the card-game UI for a hiring test that screened 5,000+ applicants",
+            "Built the Four Piles card-game UI for a 3-game hiring test that screened 5,000+ applicants",
         ],
         links: [],
         note: COMPANY,
@@ -89,12 +90,12 @@ export const items: Item[] = [
         start: "2026-09",
         end: "present",
         bits: [
-            "120 API operations, 82 DB migrations and 370+ tests",
-            "Typed read-only tools over Postgres row-level security",
-            "170+ Terraform AWS resources verified by 95 test assertions",
+            "My part: the Radar, conversation and wealth workflows",
+            "Chose 6 typed read-only tools over model-written SQL, which can give confident wrong totals and be steered by a client’s email",
+            "Across the team: 120 API operations, 82 DB migrations, 370+ tests and 170+ Terraform AWS resources",
         ],
         links: [],
-        note: "University team project in a private repo.",
+        note: `University team project. ${NOT_PUBLIC}`,
     },
     {
         id: "geo",
@@ -110,7 +111,6 @@ export const items: Item[] = [
         ],
         links: [
             { label: "GitHub", url: "https://github.com/mattw23n/geoguard" },
-            { label: "Live demo", url: "https://geoguard-t4.streamlit.app/" },
             { label: "Video", url: "https://youtu.be/hWW6oEj4Rv0" },
         ],
     },
@@ -119,12 +119,12 @@ export const items: Item[] = [
         lane: "projects",
         name: "Totally Fair Prize Converter",
         when: "May 2026",
-        what: "The prize payout tool no participant asked for. It routes a hackathon prize through creative currency conversions and shows how much \"budget surplus\" appears.",
+        what: "A joke tool for hackathon organisers: it routes a prize through currency conversions and shows how much \"budget surplus\" appears.",
         start: "2026-05",
         end: "2026-05",
         bits: [
-            "Compares the best FX route with the lowest one",
-            "Generates tiny excuses like \"The route took a tiny bite.\"",
+            "Compares the best FX route with the lowest one, on European Central Bank reference rates",
+            "Runs Bellman-Ford on log rates to inspect profit and loss cycles",
         ],
         links: [{ label: "GitHub", url: "https://github.com/zegai0603/Totally-Fair-Prize-Converter" }],
     },
@@ -141,7 +141,7 @@ export const items: Item[] = [
             "Telegram reminders with a once-a-day delivery guard",
         ],
         links: [],
-        note: PRIVATE,
+        note: NOT_PUBLIC,
     },
     {
         id: "factory",
@@ -152,11 +152,12 @@ export const items: Item[] = [
         start: "2026-09",
         end: "present",
         bits: [
-            "Sharpe 2.60 in-sample, −0.27 out of sample",
-            "Tested with Deflated Sharpe, PBO and fixed holdouts",
+            "Selected mix: Sharpe 2.60 in-sample, −0.27 out of sample, against 1.79 for a passive basket before costs",
+            "Even a pre-registered portfolio (1.87) trailed passive (1.96) on an untouched 2026 holdout",
+            "Tested with Deflated Sharpe, PBO and fixed test splits",
         ],
         links: [],
-        note: PRIVATE,
+        note: NOT_PUBLIC,
     },
     {
         id: "ctx",
@@ -169,10 +170,11 @@ export const items: Item[] = [
         bits: [
             "7.5 years backtested point-in-time across 1,404 companies",
             "Raised analysable coverage 2.5x, from 573 to 1,420 companies",
+            "Skips a company when inputs are missing: a wrong valuation is worse than none",
             "Next fix: the company list still has survivorship bias",
         ],
         links: [],
-        note: PRIVATE,
+        note: NOT_PUBLIC,
     },
     {
         id: "poly",
@@ -185,24 +187,24 @@ export const items: Item[] = [
         bits: [
             "Streamed live order books from 692 markets",
             "Captured 11.9M rows with zero integrity failures",
-            "No edge survived costs across 4 strategy families, so live capital stayed at zero",
+            "No edge cleared its pre-registered gate after costs across 4 strategy families, so I kept live capital at zero and tore the infrastructure down",
         ],
         links: [],
-        note: PRIVATE,
+        note: NOT_PUBLIC,
     },
     {
         id: "crypto",
         lane: "projects",
         name: "Crypto Sentiment Trader",
         when: "Jan – May 2026",
-        what: "A question about cost: can a cheap model handle most posts, and an LLM only the hard ones?",
+        what: "A CS464 project scoring crypto sentiment and testing whether it leads price.",
         start: "2026-01",
         end: "2026-05",
         bits: [
-            "5-service Kafka pipeline with transactional-outbox delivery",
+            "5-service Kafka pipeline, with a transactional outbox so a crash between the database write and the publish can’t lose or invent events",
             "FinBERT first, escalating only uncertain or high-impact posts to an LLM",
         ],
         links: [],
-        note: PRIVATE,
+        note: "The code is no longer available.",
     },
 ];

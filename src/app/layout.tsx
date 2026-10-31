@@ -12,9 +12,14 @@ const sora = Sora({
   variable: "--font-sora",
 });
 
+const title = "Zhe Khai Tew";
+const description = "Computer Science at SMU. Software engineering work and projects, including the experiments that failed.";
+
 export const metadata: Metadata = {
-  title: "Zhe Khai Tew",
-  description: "Zhe Khai Tew's work, projects and writing.",
+  metadataBase: new URL("https://zhekhai.com"),
+  title,
+  description,
+  openGraph: { title, description, url: "/", type: "website" },
 };
 
 export default function RootLayout({

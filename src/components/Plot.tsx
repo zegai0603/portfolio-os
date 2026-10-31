@@ -77,6 +77,11 @@ const arcOf = (i: Item) => {
 
 const [yearX, yearY] = polar(OUTER_RING + 8, angleOf(YEAR_2026)).split(" ");
 
+// On phones the plot scrolls sideways, so open on the latest work.
+const openOnLatest = (el: HTMLDivElement | null) => {
+    if (el) el.scrollLeft = el.scrollWidth;
+};
+
 export function Plot() {
     const [picked, setPicked] = useState("factory");
     const sel = items.find((i) => i.id === picked) ?? items[0];
@@ -84,8 +89,8 @@ export function Plot() {
 
     return (
         <section id="plot" className="mx-auto flex max-w-[1240px] flex-col gap-7 px-5 pt-12 pb-10">
-            <div className="overflow-x-auto">
-                <div className="relative h-[500px] min-w-[1040px] border-y border-line">
+            <div ref={openOnLatest} className="overflow-x-auto">
+                <div className="relative h-[360px] min-w-[1040px] border-y border-line">
                     {ROWS.map((row) => (
                         <div key={row.y}>
                             <span className="absolute right-0 text-[11px]" style={{ top: `calc(${row.y}% - 20px)` }}>{row.label}</span>

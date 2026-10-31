@@ -40,6 +40,19 @@ a:focus-visible {
   transition: left var(--glide), width var(--glide);
 }
 
+/* The plot's shaded grid: lines follow the rows and lanes, and past years sit a shade lighter */
+.board {
+  --header: 44px;
+  --row: calc((100% - var(--header)) / var(--rows));
+  background:
+    linear-gradient(var(--color-line) 1px, transparent 1px) 0 var(--header) / 100% var(--row) no-repeat repeat,
+    linear-gradient(90deg, var(--color-faint) 1px, transparent 1px) 26px var(--header) / 44px 100% repeat no-repeat,
+    linear-gradient(
+      #0a0a0a calc(var(--header) + var(--row) * var(--old-row)),
+      #161616 0
+    );
+}
+
 /* Corner brackets around the point in focus */
 .frame {
   width: 26px;
@@ -90,7 +103,7 @@ a:focus-visible {
 
 .dial-text {
   fill: var(--color-muted);
-  font-size: 10px;
+  font-size: 11px;
   paint-order: stroke;
   stroke: #000000;
   stroke-width: 4px;

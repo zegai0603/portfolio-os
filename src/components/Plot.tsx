@@ -31,7 +31,7 @@ const LANES = (
 const ROWS = [...items].sort((a, b) => startOf(b) - startOf(a));
 const HEADER_HEIGHT = 28;
 const ROW_HEIGHT = 44;
-const FIRST_LANE_X = 66;
+const FIRST_LANE_X = 60;
 const LANE_GAP = 44;
 const laneX = (lane: Lane) => FIRST_LANE_X + LANES.findIndex(([id]) => id === lane) * LANE_GAP;
 
@@ -174,7 +174,7 @@ export function Plot() {
                                     className="group relative block w-full cursor-pointer"
                                     style={{ height: ROW_HEIGHT }}
                                 >
-                                    <span className="absolute top-1/2 left-0 -translate-y-1/2 bg-black pr-1 text-[11px]">{startLabel(i)}</span>
+                                    <span className="absolute top-1/2 left-0 -translate-y-1/2 text-[10px]">{startLabel(i)}</span>
                                     <span
                                         className={`absolute top-1/2 block -translate-x-1/2 -translate-y-1/2 border border-white group-hover:bg-white ${selected ? "size-3.5 bg-white" : "size-2.5 bg-black"}`}
                                         style={{ left: x }}

@@ -53,6 +53,13 @@ a:focus-visible {
     );
 }
 
+.dial-grid {
+  background:
+    linear-gradient(var(--color-line) 1px, transparent 1px) 0 0 / 100% 44px,
+    linear-gradient(90deg, var(--color-faint) 1px, transparent 1px) 26px 0 / 44px 100%,
+    #0a0a0a;
+}
+
 /* Corner brackets around the point in focus */
 .frame {
   width: 26px;
@@ -105,7 +112,7 @@ a:focus-visible {
   fill: var(--color-muted);
   font-size: 11px;
   paint-order: stroke;
-  stroke: #000000;
+  stroke: #0a0a0a;
   stroke-width: 4px;
 }
 

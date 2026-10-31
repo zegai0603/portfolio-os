@@ -1,43 +1,29 @@
 {
-  "name": "portfolio-terminal",
+  "name": "portfolio",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "firebase": "firebase",
-    "firebase:login": "firebase login",
-    "firebase:seed": "node scripts/seed-firestore.mjs",
-    "firestore:deploy": "firebase deploy --only firestore:rules,firestore:indexes"
+    "lint": "eslint"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
-    "clsx": "^2.1.1",
-    "cmdk": "^1.1.1",
-    "firebase": "^12.13.0",
-    "lucide-react": "^0.562.0",
     "next": "16.1.4",
     "ogl": "^1.0.11",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-markdown": "^10.1.0",
-    "react-syntax-highlighter": "^16.1.0",
-    "remark-gfm": "^4.0.1",
-    "tailwind-merge": "^3.4.0"
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/react-syntax-highlighter": "^15.5.13",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
-    "firebase-admin": "^13.10.0",
-    "firebase-tools": "^15.18.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

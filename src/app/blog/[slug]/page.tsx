@@ -1,38 +1,34 @@
-"use client";
+import { readdir, readFile } from "node:fs/promises";
+import { join } from "node:path";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { CodeEditor } from "@/components/editor/CodeEditor";
-import { getBlogPostBySlug, BlogPost } from "@/lib/firebase";
+const POSTS = join(process.cwd(), "src/content/blog");
 
-export default function BlogPostPage() {
-    const params = useParams();
-    const slug = params?.slug as string;
-    const [post, setPost] = useState<BlogPost | null>(null);
-    const [loading, setLoading] = useState(true);
+type Props = { params: Promise<{ slug: string }> };
 
-    useEffect(() => {
-        if (slug) {
-            getBlogPostBySlug(slug)
-                .then(({ data }) => {
-                    if (data) setPost(data);
-                })
-                .finally(() => setLoading(false));
-        }
-    }, [slug]);
+export const dynamicParams = false;
 
-    if (loading) {
-        return <CodeEditor code="# Loading..." language="markdown" />;
-    }
+export async function generateStaticParams() {
+    const files = await readdir(POSTS);
+    return files.map((file) => ({ slug: file.replace(/\.md$/, "") }));
+}
 
-    if (!post) {
-        return <CodeEditor code="# 404 - Post not found" language="markdown" />;
-    }
+const readPost = (slug: string) => readFile(join(POSTS, `${slug}.md`), "utf8").catch(() => notFound());
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const post = await readPost((await params).slug);
+    return { title: `${post.split("\n")[0].replace(/^# /, "")} | Zhe Khai Tew` };
+}
+
+export default async function BlogPost({ params }: Props) {
+    const post = await readPost((await params).slug);
     return (
-        <CodeEditor
-            code={post.content}
-            language="markdown"
-        />
+        <main className="prose prose-invert prose-headings:font-display prose-headings:font-extralight mx-auto max-w-[62ch] px-5 py-12">
+            <Link href="/#plot" className="text-xs no-underline">← Back</Link>
+            <ReactMarkdown>{post}</ReactMarkdown>
+        </main>
     );
 }

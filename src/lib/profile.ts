@@ -54,7 +54,7 @@ export const items: Item[] = [
         lane: "work",
         name: "AIRAP",
         when: "Software Engineering Intern, Jun – Jul 2026",
-        what: "A guest storefront, quote pricing and an inherited staff app.",
+        what: "A mobile-optimised alcohol store used by real customers and staff.",
         start: "2026-06",
         end: "2026-07",
         bits: [

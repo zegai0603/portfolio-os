@@ -4,13 +4,11 @@ import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["300", "400"],
   variable: "--font-jetbrains",
 });
 
 const sora = Sora({
   subsets: ["latin"],
-  weight: ["200", "300"],
   variable: "--font-sora",
 });
 

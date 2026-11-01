@@ -60,6 +60,23 @@ a:focus-visible {
   animation: type-blink 1s step-end var(--at) 3;
 }
 
+/* Hovered letters flicker through terminal glyphs, drawn over the letter so it keeps its space */
+.type-char[data-glyph] {
+  color: transparent;
+}
+
+.type-char[data-glyph]::before {
+  content: attr(data-glyph);
+  position: absolute;
+  top: 0.08em;
+  left: 50%;
+  translate: -50%;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 300;
+}
+
 .type-rest {
   animation: type-letter 0.4s calc(var(--type-start) + var(--chars) * var(--type-step)) backwards;
 }

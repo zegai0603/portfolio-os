@@ -199,7 +199,7 @@ export const items: Item[] = [
       "Captured 11.9M rows with zero integrity failures",
       "No edge cleared its pre-registered gate after costs across 4 strategy families, so I kept live capital at zero and tore the infrastructure down",
     ],
-    links: [],
+    links: [{ label: "Read the blog", url: "/blog/prediction-market-experiment" }],
     note: NOT_PUBLIC,
   },
   {
@@ -216,5 +216,15 @@ export const items: Item[] = [
     ],
     links: [],
     note: `University team project. ${NOT_PUBLIC}`,
+  },
+  {
+    id: "prediction-market-experiment",
+    lane: "blogs",
+    name: "Experiment in prediction markets",
+    when: "Nov 2026",
+    what: "What three months of paper trading Polymarket taught me about checking the edge before building.",
+    start: "2026-11",
+    bits: [],
+    links: [{ label: "Read", url: "/blog/prediction-market-experiment" }],
   },
 ];

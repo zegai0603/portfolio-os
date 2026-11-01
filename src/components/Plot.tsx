@@ -31,12 +31,9 @@ const LANES = (
 ).filter(([lane]) => items.some((i) => i.lane === lane));
 const ROWS = [...items].sort((a, b) => startOf(b) - startOf(a));
 const HEADER_HEIGHT = 44;
-// Phones keep full-size touch targets; desktop rows stay tight so the plot and dial fit one window.
 const ROW_HEIGHT = 44;
-const DESKTOP_ROW_HEIGHT = 32;
+// On desktop the rows share out the height the dial leaves, so the left column fills the window.
 const rowHeight = `calc((100% - ${HEADER_HEIGHT}px) / ${ROWS.length})`;
-// The plot's shaded grid marks the rows from before this year.
-const FIRST_OLD_ROW = ROWS.findIndex((i) => startOf(i) < YEAR_2026);
 const DATE_WIDTH = 54;
 const CLOSED_WIDTH = 44;
 const POINT_X = 16;
@@ -126,7 +123,7 @@ function Dial({ sel }: { sel: Item }) {
     const ranAlongside = (i: Item) => startOf(i) < endOf(sel) && startOf(sel) < endOf(i);
 
     return (
-        <svg viewBox="0 0 320 320" role="img" aria-label={`Every project as a ring on a timeline, with ${sel.name} highlighted`} className="w-80 max-w-full">
+        <svg viewBox="0 8 320 286" role="img" aria-label={`Every project as a ring on a timeline, with ${sel.name} highlighted`} className="w-80 max-w-full">
             <path d={`M${polar(44, angleOf(YEAR_2026))}L${polar(OUTER_RING + 4, angleOf(YEAR_2026))}`} stroke="var(--color-faint)" />
             {items.map((i) => (
                 <path
@@ -178,18 +175,10 @@ export function Plot() {
         >
             <div className="flex min-h-0 flex-col gap-6">
                 <div
-                    className="board relative h-(--plot-height) w-full shrink-0 border-y border-line lg:h-(--plot-height-lg)"
-                    style={{
-                        "--plot-height": `${HEADER_HEIGHT + ROWS.length * ROW_HEIGHT}px`,
-                        "--plot-height-lg": `${HEADER_HEIGHT + ROWS.length * DESKTOP_ROW_HEIGHT}px`,
-                        "--rows": ROWS.length,
-                        "--old-row": FIRST_OLD_ROW,
-                    } as CSSProperties}
+                    className="board relative h-(--plot-height) w-full bg-[#111111] lg:h-auto lg:min-h-0 lg:flex-1"
+                    style={{ "--plot-height": `${HEADER_HEIGHT + ROWS.length * ROW_HEIGHT}px` } as CSSProperties}
                     onMouseLeave={() => setPeek(null)}
                 >
-                    {[ROWS[0], ROWS[FIRST_OLD_ROW]].map((i) => (
-                        <span key={i.id} className="absolute right-1 mt-1 text-[10px]" style={{ top: rowY(i) }}>[ {i.start.slice(0, 4)} ]</span>
-                    ))}
                     {ROWS.map((i) => (
                         <span
                             key={i.id}
@@ -247,7 +236,7 @@ export function Plot() {
                         );
                     })}
                 </div>
-                <div className="flex justify-center">
+                <div className="flex shrink-0 justify-center">
                     <Dial sel={sel} />
                 </div>
             </div>

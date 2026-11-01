@@ -20,7 +20,7 @@ const startLabel = (i: Item) => {
 };
 
 // The plot runs down the page, newest first: each item has its own row, and each lane is a column.
-// Only one lane is open at a time. Closed lanes show their points alone, with no labels or dates.
+// Only one lane is open at a time. Closed lanes show their points alone, with no labels.
 // A lane appears with its first item.
 const LANES = (
     [
@@ -152,8 +152,7 @@ export function Plot() {
     const backButton = useRef<HTMLButtonElement>(null);
     const lastRow = useRef<HTMLElement>(null);
     const sel = items.find((i) => i.id === picked) ?? items[0];
-    const openLane = peek ?? sel.lane;
-    const open = laneIndex(openLane);
+    const open = laneIndex(peek ?? sel.lane);
 
     // On desktop the details are already beside the plot, so the phone sheet stays hidden.
     const pick = (id: string, row: HTMLElement) => {
@@ -182,7 +181,7 @@ export function Plot() {
                     {ROWS.map((i) => (
                         <span
                             key={i.id}
-                            className={`absolute left-1.5 -translate-y-1/2 text-[10px] transition-opacity duration-150 ${i.lane === openLane || i === sel ? "" : "opacity-0"}`}
+                            className="absolute left-1.5 -translate-y-1/2 text-[10px]"
                             style={{ top: rowY(i, 0.5) }}
                         >
                             {startLabel(i)}

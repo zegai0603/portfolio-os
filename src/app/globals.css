@@ -35,6 +35,11 @@ a:focus-visible {
 :root {
   --type-start: 300ms;
   --type-step: 75ms;
+  --brackets:
+    linear-gradient(#fff, #fff) 0 0 / 6px 1px, linear-gradient(#fff, #fff) 0 0 / 1px 6px,
+    linear-gradient(#fff, #fff) 100% 0 / 6px 1px, linear-gradient(#fff, #fff) 100% 0 / 1px 6px,
+    linear-gradient(#fff, #fff) 0 100% / 6px 1px, linear-gradient(#fff, #fff) 0 100% / 1px 6px,
+    linear-gradient(#fff, #fff) 100% 100% / 6px 1px, linear-gradient(#fff, #fff) 100% 100% / 1px 6px;
 }
 
 .type-char {
@@ -60,21 +65,29 @@ a:focus-visible {
   animation: type-blink 1s step-end var(--at) 3;
 }
 
-/* Hovered letters flicker through terminal glyphs, drawn over the letter so it keeps its space */
-.type-char[data-glyph] {
-  color: transparent;
+/* The hovered letter drops to its outline inside the plot's corner brackets */
+.wire::before {
+  content: "";
+  position: absolute;
+  inset: 0.2em -0.03em 0.1em;
+  pointer-events: none;
+  opacity: 0;
+  scale: 1.1;
+  background: var(--brackets);
+  background-repeat: no-repeat;
+  transition: opacity 0.12s linear, scale 0.12s linear;
 }
 
-.type-char[data-glyph]::before {
-  content: attr(data-glyph);
-  position: absolute;
-  top: 0.08em;
-  left: 50%;
-  translate: -50%;
-  color: #ffffff;
-  font-family: var(--font-mono);
-  font-size: 0.85em;
-  font-weight: 300;
+@media (hover: hover) {
+  .wire:hover {
+    color: transparent;
+    -webkit-text-stroke: 1px #ffffff;
+  }
+
+  .wire:hover::before {
+    opacity: 1;
+    scale: 1;
+  }
 }
 
 .type-rest {
@@ -131,11 +144,7 @@ a:focus-visible {
   opacity: 0;
   scale: 1.35;
   transition: opacity 0.12s linear, scale 0.12s linear;
-  background:
-    linear-gradient(#fff, #fff) 0 0 / 6px 1px, linear-gradient(#fff, #fff) 0 0 / 1px 6px,
-    linear-gradient(#fff, #fff) 100% 0 / 6px 1px, linear-gradient(#fff, #fff) 100% 0 / 1px 6px,
-    linear-gradient(#fff, #fff) 0 100% / 6px 1px, linear-gradient(#fff, #fff) 0 100% / 1px 6px,
-    linear-gradient(#fff, #fff) 100% 100% / 6px 1px, linear-gradient(#fff, #fff) 100% 100% / 1px 6px;
+  background: var(--brackets);
   background-repeat: no-repeat;
 }
 

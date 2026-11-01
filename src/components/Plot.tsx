@@ -174,10 +174,11 @@ export function Plot() {
         >
             <div className="flex min-h-0 flex-col gap-6">
                 <div
-                    className="board relative h-(--plot-height) w-full bg-[#111111] lg:h-auto lg:min-h-0 lg:flex-1"
+                    className="board relative h-(--plot-height) w-full border-b border-white bg-[#111111] lg:h-auto lg:min-h-0 lg:flex-1"
                     style={{ "--plot-height": `${HEADER_HEIGHT + ROWS.length * ROW_HEIGHT}px` } as CSSProperties}
                     onMouseLeave={() => setPeek(null)}
                 >
+                    <span className="absolute inset-x-0 h-px bg-white" style={{ top: HEADER_HEIGHT }} />
                     {ROWS.map((i) => (
                         <span
                             key={i.id}

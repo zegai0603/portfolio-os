@@ -13,7 +13,7 @@ const sora = Sora({
 });
 
 const title = "Zhe Khai Tew";
-const description = "Computer Science at SMU. Software engineering work and projects, including the experiments that failed.";
+const description = "Penultimate Computer Science student at SMU. Software engineering work and projects";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://zhekhai.com"),

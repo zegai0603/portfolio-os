@@ -13,7 +13,7 @@ export default function HomePage() {
           </h1>
           <p className="text-white">I love to build and experiment on things</p>
           <p className="text-xs text-white">
-            {contact.name}, Computer Science at SMU, graduating May 2028.
+            {contact.name}, Penultimate Computer Science student at SMU, graduating May 2028.
           </p>
         </div>
         <a

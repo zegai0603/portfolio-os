@@ -28,6 +28,7 @@ export function Background() {
                 mouseStrength={0.2}
                 pageLoadAnimation={!still}
                 brightness={0.4}
+                dpr={1}
             />
         </div>
     );

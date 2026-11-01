@@ -226,6 +226,8 @@ void main() {
 }
 `;
 
+const FRAME_MS = 30;
+
 function hexToRgb(hex: string): [number, number, number] {
     let h = hex.replace('#', '').trim();
     if (h.length === 3)
@@ -342,8 +344,23 @@ export default function FaultyTerminal({
         resizeObserver.observe(ctn);
         resize();
 
+        // The shader is heavy, so it draws at about 30fps and stops once it scrolls out of view.
+        let onScreen = true;
+        let lastFrame = 0;
+        // The -1px margin matters: at the plot the canvas only touches the viewport, which still counts as intersecting.
+        const visibility = new IntersectionObserver(
+            ([entry]) => {
+                onScreen = entry.isIntersecting;
+            },
+            { rootMargin: '-1px' }
+        );
+        visibility.observe(ctn);
+
         const update = (t: number) => {
             rafRef.current = requestAnimationFrame(update);
+
+            if (!onScreen || t - lastFrame < FRAME_MS) return;
+            lastFrame = t;
 
             if (pageLoadAnimation && loadAnimationStartRef.current === 0) {
                 loadAnimationStartRef.current = t;
@@ -385,6 +402,7 @@ export default function FaultyTerminal({
 
         return () => {
             cancelAnimationFrame(rafRef.current);
+            visibility.disconnect();
             resizeObserver.disconnect();
             if (mouseReact) window.removeEventListener('mousemove', handleMouseMove);
             if (gl.canvas.parentElement === ctn) ctn.removeChild(gl.canvas);

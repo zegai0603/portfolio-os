@@ -31,6 +31,62 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+/* The headline types itself in CSS alone: letters keep their space, so nothing shifts or runs JavaScript */
+:root {
+  --type-start: 300ms;
+  --type-step: 75ms;
+}
+
+.type-char {
+  --at: calc(var(--type-start) + var(--i) * var(--type-step));
+  position: relative;
+  animation: type-letter 0s var(--at) backwards;
+}
+
+.type-char::after {
+  content: "";
+  position: absolute;
+  top: 0.06em;
+  bottom: 0.06em;
+  left: 100%;
+  margin-left: 0.03em;
+  width: 0.05em;
+  background: var(--color-accent);
+  opacity: 0;
+  animation: type-caret var(--type-step) var(--at);
+}
+
+.type-char:last-child::after {
+  animation: type-blink 1s step-end var(--at) 3;
+}
+
+.type-rest {
+  animation: type-letter 0.4s calc(var(--type-start) + var(--chars) * var(--type-step)) backwards;
+}
+
+@keyframes type-letter {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes type-caret {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes type-blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
 /* The plot: every move between points shares one glide */
 :root {
   --glide: 0.52s cubic-bezier(0.22, 1, 0.36, 1);
@@ -114,7 +170,10 @@ a:focus-visible {
     transition: none;
   }
 
-  .swap {
+  .swap,
+  .type-char,
+  .type-char::after,
+  .type-rest {
     animation: none;
   }
 }

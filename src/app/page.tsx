@@ -1,18 +1,36 @@
+import type { CSSProperties } from "react";
 import { Background } from "@/components/Background";
 import { Plot } from "@/components/Plot";
 import { contact } from "@/lib/profile";
+
+const HEADLINE = "Hi there, I'm ZK";
 
 export default function HomePage() {
   return (
     <main>
       <section className="relative flex h-svh min-h-[560px] flex-col items-center justify-center overflow-hidden px-6 text-center">
         <Background />
-        <div className="relative flex flex-col items-center gap-3.5">
-          <h1 className="font-display text-[clamp(52px,10vw,128px)] leading-none font-extralight tracking-[-0.05em] text-balance text-white">
-            Hi there, I&apos;m ZK
+        <div
+          className="relative flex flex-col items-center gap-3.5"
+          style={{ "--chars": HEADLINE.length } as CSSProperties}
+        >
+          <h1
+            aria-label={HEADLINE}
+            className="font-display text-[clamp(52px,10vw,128px)] leading-none font-extralight tracking-[-0.05em] text-balance text-white"
+          >
+            {[...HEADLINE].map((char, i) => (
+              <span
+                key={i}
+                aria-hidden="true"
+                className="type-char"
+                style={{ "--i": i } as CSSProperties}
+              >
+                {char}
+              </span>
+            ))}
           </h1>
-          <p className="text-white">I love to build and experiment on things</p>
-          <p className="text-xs text-white">
+          <p className="type-rest text-white">I love to build and experiment on things</p>
+          <p className="type-rest text-xs text-white">
             {contact.name}, Penultimate Computer Science student at SMU, graduating May 2028.
           </p>
         </div>

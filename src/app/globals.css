@@ -40,6 +40,11 @@ a:focus-visible {
   transition: left var(--glide), width var(--glide);
 }
 
+/* Heading labels glide between the column's edges, so they stay inside the plot */
+.lane-label {
+  transition: left var(--glide), translate var(--glide);
+}
+
 .plot-rows {
   scrollbar-width: thin;
   scrollbar-color: var(--color-line) transparent;
@@ -103,6 +108,7 @@ a:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .lane,
+  .lane-label,
   .frame,
   .sheet {
     transition: none;

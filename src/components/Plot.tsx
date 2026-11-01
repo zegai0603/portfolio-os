@@ -194,7 +194,8 @@ export function Plot() {
                                     type="button"
                                     aria-expanded={isOpen}
                                     onClick={() => setPeek(lane)}
-                                    className={`absolute inset-y-0 flex cursor-pointer items-center gap-1.5 text-[10px] whitespace-nowrap hover:text-white ${index > open ? "right-0" : "left-0"} ${isOpen ? "text-white" : ""}`}
+                                    className={`lane-label absolute inset-y-0 flex cursor-pointer items-center gap-1.5 text-[10px] whitespace-nowrap hover:text-white ${isOpen ? "text-white" : ""}`}
+                                    style={index > open ? { left: "100%", translate: "-100%" } : { left: 0, translate: "0" }}
                                 >
                                     {label} <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
                                 </button>

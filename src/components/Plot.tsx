@@ -32,12 +32,13 @@ const LANES = (
 const ROWS = [...items].sort((a, b) => startOf(b) - startOf(a));
 const HEADER_HEIGHT = 44;
 const ROW_HEIGHT = 44;
-// On desktop the rows share out the height the dial leaves, so the left column fills the window.
-const rowHeight = `calc((100% - ${HEADER_HEIGHT}px) / ${ROWS.length})`;
+// Rows share out the plot's height down to ROW_HEIGHT, then scroll under the pinned heading.
+const rowsHeight = `max(100%, ${ROWS.length * ROW_HEIGHT}px)`;
+const rowHeight = `${100 / ROWS.length}%`;
 const DATE_WIDTH = 54;
 const CLOSED_WIDTH = 44;
 const POINT_X = 16;
-const rowY = (i: Item, offset = 0) => `calc(${HEADER_HEIGHT}px + (100% - ${HEADER_HEIGHT}px) * ${(ROWS.indexOf(i) + offset) / ROWS.length})`;
+const rowY = (i: Item, offset = 0) => `${((ROWS.indexOf(i) + offset) / ROWS.length) * 100}%`;
 const laneIndex = (lane: Lane) => LANES.findIndex(([id]) => id === lane);
 // Lanes before the open one stack on the left, and lanes after it stack on the right.
 const laneLeft = (index: number, open: number) =>
@@ -175,66 +176,82 @@ export function Plot() {
             <div className="flex min-h-0 flex-col gap-6">
                 <div
                     className="board relative h-(--plot-height) w-full border-b border-white bg-[#111111] lg:h-auto lg:min-h-0 lg:flex-1"
-                    style={{ "--plot-height": `${HEADER_HEIGHT + ROWS.length * ROW_HEIGHT}px` } as CSSProperties}
+                    style={{ "--plot-height": `${HEADER_HEIGHT + ROWS.length * ROW_HEIGHT + 1}px` } as CSSProperties}
                     onMouseLeave={() => setPeek(null)}
                 >
                     <span className="absolute inset-x-0 h-px bg-white" style={{ top: HEADER_HEIGHT }} />
-                    {ROWS.map((i) => (
-                        <span
-                            key={i.id}
-                            className="absolute left-1.5 -translate-y-1/2 text-[10px]"
-                            style={{ top: rowY(i, 0.5) }}
-                        >
-                            {startLabel(i)}
-                        </span>
-                    ))}
                     {LANES.map(([lane, label], index) => {
                         const isOpen = index === open;
                         return (
                             <div
                                 key={lane}
-                                className="lane absolute inset-y-0"
-                                style={{ left: laneLeft(index, open), width: laneWidth(index, open) }}
+                                className="lane absolute top-0"
+                                style={{ left: laneLeft(index, open), width: laneWidth(index, open), height: HEADER_HEIGHT }}
                                 onMouseEnter={() => setPeek(lane)}
                                 onFocus={() => setPeek(lane)}
                             >
-                                <span className="absolute bottom-0 w-px bg-faint" style={{ left: POINT_X, top: HEADER_HEIGHT }} />
                                 <button
                                     type="button"
                                     aria-expanded={isOpen}
                                     onClick={() => setPeek(lane)}
-                                    className={`absolute top-0 flex cursor-pointer items-center gap-1.5 text-[10px] whitespace-nowrap hover:text-white ${index > open ? "right-0" : "left-0"} ${isOpen ? "text-white" : ""}`}
-                                    style={{ height: HEADER_HEIGHT }}
+                                    className={`absolute inset-y-0 flex cursor-pointer items-center gap-1.5 text-[10px] whitespace-nowrap hover:text-white ${index > open ? "right-0" : "left-0"} ${isOpen ? "text-white" : ""}`}
                                 >
                                     {label} <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
                                 </button>
-                                {ROWS.filter((i) => i.lane === lane).map((i) => {
-                                    const selected = i === sel;
-                                    return (
-                                        <button
-                                            key={i.id}
-                                            type="button"
-                                            aria-pressed={selected}
-                                            onClick={(e) => pick(i.id, e.currentTarget)}
-                                            className="group absolute inset-x-0 cursor-pointer"
-                                            style={{ top: rowY(i), height: rowHeight }}
-                                        >
-                                            <span
-                                                className={`absolute top-1/2 block -translate-x-1/2 -translate-y-1/2 border border-white group-hover:bg-white ${selected ? "size-3.5 bg-white" : "size-2.5 bg-black"}`}
-                                                style={{ left: POINT_X }}
-                                            />
-                                            <span className={`frame absolute top-1/2 -translate-x-1/2 -translate-y-1/2 ${selected ? "frame-on" : ""}`} style={{ left: POINT_X }} />
-                                            <span className="absolute inset-y-0 right-0 flex min-w-0 items-center" style={{ left: POINT_X + 14 }}>
-                                                <span className={`truncate pr-1 text-xs transition-opacity duration-150 group-hover:text-white ${isOpen ? "" : "opacity-0"} ${selected ? "text-white" : "text-muted"}`}>
-                                                    {i.name}
-                                                </span>
-                                            </span>
-                                        </button>
-                                    );
-                                })}
                             </div>
                         );
                     })}
+                    <div className="plot-rows absolute inset-x-0 bottom-0 overflow-x-hidden overflow-y-auto" style={{ top: HEADER_HEIGHT }}>
+                        <div className="relative" style={{ height: rowsHeight }}>
+                            {ROWS.map((i) => (
+                                <span
+                                    key={i.id}
+                                    className="absolute left-1.5 -translate-y-1/2 text-[10px]"
+                                    style={{ top: rowY(i, 0.5) }}
+                                >
+                                    {startLabel(i)}
+                                </span>
+                            ))}
+                            {LANES.map(([lane], index) => {
+                                const isOpen = index === open;
+                                return (
+                                    <div
+                                        key={lane}
+                                        className="lane absolute inset-y-0"
+                                        style={{ left: laneLeft(index, open), width: laneWidth(index, open) }}
+                                        onMouseEnter={() => setPeek(lane)}
+                                        onFocus={() => setPeek(lane)}
+                                    >
+                                        <span className="absolute inset-y-0 w-px bg-faint" style={{ left: POINT_X }} />
+                                        {ROWS.filter((i) => i.lane === lane).map((i) => {
+                                            const selected = i === sel;
+                                            return (
+                                                <button
+                                                    key={i.id}
+                                                    type="button"
+                                                    aria-pressed={selected}
+                                                    onClick={(e) => pick(i.id, e.currentTarget)}
+                                                    className="group absolute inset-x-0 cursor-pointer"
+                                                    style={{ top: rowY(i), height: rowHeight }}
+                                                >
+                                                    <span
+                                                        className={`absolute top-1/2 block -translate-x-1/2 -translate-y-1/2 border border-white group-hover:bg-white ${selected ? "size-3.5 bg-white" : "size-2.5 bg-black"}`}
+                                                        style={{ left: POINT_X }}
+                                                    />
+                                                    <span className={`frame absolute top-1/2 -translate-x-1/2 -translate-y-1/2 ${selected ? "frame-on" : ""}`} style={{ left: POINT_X }} />
+                                                    <span className="absolute inset-y-0 right-0 flex min-w-0 items-center" style={{ left: POINT_X + 14 }}>
+                                                        <span className={`truncate pr-1 text-xs transition-opacity duration-150 group-hover:text-white ${isOpen ? "" : "opacity-0"} ${selected ? "text-white" : "text-muted"}`}>
+                                                            {i.name}
+                                                        </span>
+                                                    </span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
                 </div>
                 <div className="flex shrink-0 justify-center">
                     <Dial sel={sel} />

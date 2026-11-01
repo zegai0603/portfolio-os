@@ -40,6 +40,11 @@ a:focus-visible {
   transition: left var(--glide), width var(--glide);
 }
 
+.plot-rows {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
 /* Corner brackets around the point in focus */
 .frame {
   width: 26px;

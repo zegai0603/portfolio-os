@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
 import { axis, items, type Item, type Lane } from "@/lib/profile";
 
 const monthIndex = (ym: string) => {
@@ -20,14 +20,14 @@ const startLabel = (i: Item) => {
 };
 
 // The plot runs down the page, newest first: each item has its own row, and each lane is a column.
-// Only one lane is open at a time. Closed lanes show their points alone, with no labels.
+// Only one lane is open at a time. Closed lanes show their points alone, with a short heading that fits their width.
 // A lane appears with its first item.
 const LANES = (
     [
-        ["work", "WORK"],
-        ["projects", "PROJECTS"],
-        ["blogs", "BLOGS"],
-    ] as [Lane, string][]
+        ["work", "WORK", "WORK"],
+        ["projects", "PROJECTS", "PROJ"],
+        ["blogs", "BLOGS", "BLOG"],
+    ] as [Lane, string, string][]
 ).filter(([lane]) => items.some((i) => i.lane === lane));
 const ROWS = [...items].sort((a, b) => startOf(b) - startOf(a));
 const HEADER_HEIGHT = 44;
@@ -146,23 +146,48 @@ function Dial({ sel }: { sel: Item }) {
     );
 }
 
+// The last point picked in this tab, so the plot comes back to it after leaving the page.
+const PICKED_KEY = "plot-picked";
+const FIRST_PICK = "factory";
+const readPicked = () => {
+    try {
+        return sessionStorage.getItem(PICKED_KEY) ?? FIRST_PICK;
+    } catch {
+        return FIRST_PICK;
+    }
+};
+const noUpdates = () => () => {};
+
 export function Plot() {
-    const [picked, setPicked] = useState("factory");
+    const remembered = useSyncExternalStore(noUpdates, readPicked, () => FIRST_PICK);
+    const [chosen, setChosen] = useState<string | null>(null);
+    const picked = chosen ?? remembered;
     const [peek, setPeek] = useState<Lane | null>(null);
     const [sheetOpen, setSheetOpen] = useState(false);
     const backButton = useRef<HTMLButtonElement>(null);
     const lastRow = useRef<HTMLElement>(null);
+    const rows = useRef<HTMLDivElement>(null);
     const sel = items.find((i) => i.id === picked) ?? items[0];
     const open = laneIndex(peek ?? sel.lane);
 
     // On desktop the details are already beside the plot, so the phone sheet stays hidden.
     const pick = (id: string, row: HTMLElement) => {
-        setPicked(id);
+        try {
+            sessionStorage.setItem(PICKED_KEY, id);
+        } catch {}
+        setChosen(id);
         setPeek(null);
         setSheetOpen(true);
         lastRow.current = row;
         requestAnimationFrame(() => backButton.current?.focus());
     };
+    // Coming back to the plot, bring the remembered row into the scrolling list.
+    useEffect(() => {
+        const list = rows.current;
+        if (!list) return;
+        const row = ROWS.findIndex((i) => i.id === readPicked());
+        list.scrollTop = ((row + 0.5) / ROWS.length) * list.scrollHeight - list.clientHeight / 2;
+    }, []);
     const closeSheet = () => {
         setSheetOpen(false);
         lastRow.current?.focus();
@@ -180,7 +205,7 @@ export function Plot() {
                     onMouseLeave={() => setPeek(null)}
                 >
                     <span className="absolute inset-x-0 h-px bg-white" style={{ top: HEADER_HEIGHT }} />
-                    {LANES.map(([lane, label], index) => {
+                    {LANES.map(([lane, label, short], index) => {
                         const isOpen = index === open;
                         return (
                             <div
@@ -193,16 +218,17 @@ export function Plot() {
                                 <button
                                     type="button"
                                     aria-expanded={isOpen}
+                                    aria-label={label}
                                     onClick={() => setPeek(lane)}
                                     className={`lane-label absolute inset-y-0 flex cursor-pointer items-center gap-1.5 text-[10px] whitespace-nowrap hover:text-white ${isOpen ? "text-white" : ""}`}
                                     style={index > open ? { left: "100%", translate: "-100%" } : { left: 0, translate: "0" }}
                                 >
-                                    {label} <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
+                                    {isOpen ? label : short} <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
                                 </button>
                             </div>
                         );
                     })}
-                    <div className="plot-rows absolute inset-x-0 bottom-0 overflow-x-hidden overflow-y-auto" style={{ top: HEADER_HEIGHT }}>
+                    <div ref={rows} className="plot-rows absolute inset-x-0 bottom-0 overflow-x-hidden overflow-y-auto" style={{ top: HEADER_HEIGHT }}>
                         <div className="relative" style={{ height: rowsHeight }}>
                             {ROWS.map((i) => (
                                 <span

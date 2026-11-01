@@ -167,6 +167,17 @@ export const items: Item[] = [
     links: [],
     note: NOT_PUBLIC,
   },
+  // Dates stop at the month, so this sits before Contextual to rank as the newer August item.
+  {
+    id: "prediction-market-experiment",
+    lane: "blogs",
+    name: "Experiment in prediction markets",
+    when: "End of Aug 2026",
+    what: "What three months of paper trading Polymarket taught me about checking the edge before building.",
+    start: "2026-08",
+    bits: [],
+    links: [{ label: "Read", url: "/blog/prediction-market-experiment" }],
+  },
   {
     id: "ctx",
     lane: "projects",
@@ -216,15 +227,5 @@ export const items: Item[] = [
     ],
     links: [],
     note: `University team project. ${NOT_PUBLIC}`,
-  },
-  {
-    id: "prediction-market-experiment",
-    lane: "blogs",
-    name: "Experiment in prediction markets",
-    when: "Nov 2026",
-    what: "What three months of paper trading Polymarket taught me about checking the edge before building.",
-    start: "2026-11",
-    bits: [],
-    links: [{ label: "Read", url: "/blog/prediction-market-experiment" }],
   },
 ];

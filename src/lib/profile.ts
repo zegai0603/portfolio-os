@@ -167,16 +167,26 @@ export const items: Item[] = [
     links: [],
     note: NOT_PUBLIC,
   },
+  {
+    id: "to-the-moon-2-equities",
+    lane: "blogs",
+    name: "To the Moon (2) - Equities",
+    when: "Start of Oct 2026",
+    what: "Testing a reverse DCF, company events and post-earnings drift on paper, with the results.",
+    start: "2026-10",
+    bits: [],
+    links: [{ label: "Read", url: "/blog/to-the-moon-2-equities" }],
+  },
   // Dates stop at the month, so this sits before Contextual to rank as the newer August item.
   {
-    id: "prediction-market-experiment",
+    id: "to-the-moon-1-prediction-markets",
     lane: "blogs",
-    name: "Experiment in prediction markets",
+    name: "To the Moon (1) - Prediction Markets",
     when: "End of Aug 2026",
     what: "What three months of paper trading Polymarket taught me about checking the edge before building.",
     start: "2026-08",
     bits: [],
-    links: [{ label: "Read", url: "/blog/prediction-market-experiment" }],
+    links: [{ label: "Read", url: "/blog/to-the-moon-1-prediction-markets" }],
   },
   {
     id: "ctx",
@@ -192,7 +202,7 @@ export const items: Item[] = [
       "Skips a company when inputs are missing: a wrong valuation is worse than none",
       "Next fix: the company list still has survivorship bias",
     ],
-    links: [],
+    links: [{ label: "Read the blog", url: "/blog/to-the-moon-2-equities" }],
     note: NOT_PUBLIC,
   },
   {
@@ -210,7 +220,7 @@ export const items: Item[] = [
       "Captured 11.9M rows with zero integrity failures",
       "No edge cleared its pre-registered gate after costs across 4 strategy families, so I kept live capital at zero and tore the infrastructure down",
     ],
-    links: [{ label: "Read the blog", url: "/blog/prediction-market-experiment" }],
+    links: [{ label: "Read the blog", url: "/blog/to-the-moon-1-prediction-markets" }],
     note: NOT_PUBLIC,
   },
   {

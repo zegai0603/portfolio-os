@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import { ZoomImage } from "@/components/ZoomImage";
 
 const POSTS = join(process.cwd(), "src/content/blog");
 
@@ -28,7 +29,7 @@ export default async function BlogPost({ params }: Props) {
     return (
         <main className="prose prose-invert prose-headings:font-display prose-headings:font-extralight mx-auto max-w-[62ch] px-5 py-12">
             <Link href="/#plot" className="text-xs no-underline">← Back</Link>
-            <ReactMarkdown>{post}</ReactMarkdown>
+            <ReactMarkdown components={{ img: ZoomImage }}>{post}</ReactMarkdown>
         </main>
     );
 }

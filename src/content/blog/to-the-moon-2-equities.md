@@ -58,9 +58,22 @@ But the median trade was about flat and only 50.3% won, so a few big winners did
 
 Then I overruled it. I raised the drawdown limits to 25% and 30% and put it on paper anyway. That's moving the goalposts, so the backtest no longer counts as evidence. Those two years are spent too, and only forward paper results count now.
 
-The paper version buys plainly while SPY is above its 200-day average, and pairs each buy with a sector ETF short below it. It started on 21 October. By 30 October the account was up 5.7% while SPY fell 1.7%, with 10 open positions and 0 closed trades.
+The paper version started on 21 October. At first it bought plainly while SPY was above its 200-day average, and paired each buy with a sector ETF short below it.
 
-That's eight sessions, so it's not a result. It needs 40 closed trades before the gate even looks at it.
+Then I changed the rules again, twice in two days:
+
+- **2 November:** up to 15 positions instead of 10. A replay of 2018 to 2024 signals made +50% against +43%, with a worst drop of 31% against 27%.
+- **3 November:** no more hedge, and only the top 25% of reactions instead of 30%. On a 2018 to 2026 replay, long-only made +129% and +81% in the two periods, against +71% and +35% with the hedge, for about the same worst drop. The hedge helped in slow bear months but not in sudden crashes.
+
+Both replays include the two test years I'd already spent, so they're more goalpost moving, not evidence. I'm writing them down so the changes are easy to see.
+
+It now runs on a small always-on server instead of my Mac, three times each morning New York time, with alerts and a kill switch.
+
+The first real-world problem was fills. Alpaca's paper account expired 16 of my first 17 opening-auction orders, so every entry filled at the 09:45 retry, on average 0.8% above the open the study buys at. That's a cost the backtest never sees. Since 5 November, entries go in as market orders for the open.
+
+By the 4 November close, the account was up 9.6% while SPY was down 0.3%. It holds 15 open positions and has closed 1 trade: SMCI, down 3.5%, though its sector ETF fell 5.8%. It's also about 126% invested on paper margin, because the first ten positions were sized for 10 slots before I moved to 15. So gains and losses are both bigger than the study's.
+
+That's 11 sessions and one closed trade, so it's still not a result. The gate needs 40 closed trades before it even looks.
 
 ## What I'd keep
 
@@ -74,4 +87,4 @@ That's eight sessions, so it's not a result. It needs 40 closed trades before th
 - **Test the checks too.** My text search for claims flagged money owed to a company as money it owed. A strict gate can be strict for the wrong reasons.
 - **Write down why you break a rule.** Overruling the stop may be fine, but the override is the part to distrust.
 
-So right now the drift account is beating SPY on paper but no trades are closed yet. In the next 40 closed trades we shall see if I could reach the moon.
+So right now the drift account is beating SPY on paper, with one trade closed. In the next 39 closed trades we shall see if I could reach the moon.

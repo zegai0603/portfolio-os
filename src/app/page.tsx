@@ -29,7 +29,7 @@ export default function HomePage() {
               </span>
             ))}
           </h1>
-          <p className="type-rest text-white">I love to build and experiment on things</p>
+          <p className="type-rest text-white">Builder and experimenter</p>
           <p className="type-rest text-xs text-white">
             {contact.name}, Penultimate Computer Science student at SMU, graduating May 2028.
           </p>

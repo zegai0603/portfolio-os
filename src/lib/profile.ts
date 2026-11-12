@@ -72,10 +72,12 @@ export const items: Item[] = [
     lane: "work",
     name: "PXT Equity",
     when: "Software Engineering Intern, Jun – Aug 2025",
-    what: "Fast data collection, and a hiring test thousands of people took.",
+    what: "Ran eBay and Etsy stores, plus fast data collection and a hiring test thousands of people took.",
     start: "2025-06",
     end: "2025-08",
     bits: [
+      "Ran our eBay and Etsy stores from sourcing to shipping and refunds on Strustore, an internal ops platform",
+      "Built Strustore’s inventory sync, pushing each stock change to every live eBay and Etsy listing",
       "Built a parallel scraper that skipped page rendering to collect 100,000+ listings a day",
       "Built the Four Piles card-game UI for a 3-game hiring test that screened 5,000+ applicants",
     ],

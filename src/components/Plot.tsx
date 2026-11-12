@@ -110,9 +110,12 @@ function Details({ item }: { item: Item }) {
             {item.images && (
                 <div className="mt-4 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
                     {item.images.map((image) => (
-                        <div key={image.src} className="border border-line">
-                            <ZoomImage src={image.src} alt={image.alt} />
-                        </div>
+                        <figure key={image.src} className="flex flex-col gap-2">
+                            <div className="border border-line">
+                                <ZoomImage src={image.src} alt={image.alt} />
+                            </div>
+                            <figcaption className="text-xs">{image.alt}</figcaption>
+                        </figure>
                     ))}
                 </div>
             )}

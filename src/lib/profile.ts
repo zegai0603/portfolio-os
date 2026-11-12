@@ -15,7 +15,7 @@ export interface Item {
   links: { label: string; url: string }[];
   // Shown under the links when there is no public repo.
   note?: string;
-  // Real images only: a project without any shows no image row.
+  // Real images only, each backing a claim; the alt text doubles as the caption. A project without any shows no image row.
   images?: { src: string; alt: string }[];
 }
 
@@ -99,9 +99,8 @@ export const items: Item[] = [
     links: [],
     note: `University team project. ${NOT_PUBLIC}`,
     images: [
-      { src: "/images/scrooge/01-radar-call-queue.png", alt: "Relationship Radar call queue with a possible-scam signal, payment chart and call plan, on fictional demo data" },
-      { src: "/images/scrooge/02-source-of-wealth-ledger.png", alt: "Source-of-wealth review tracing SGD 5M of SGD 8M declared, with the next actions" },
-      { src: "/images/scrooge/03-radar-aws-architecture.png", alt: "Team AWS architecture diagram with the Relationship Radar path highlighted" },
+      { src: "/images/scrooge/01-radar-call-queue.png", alt: "My Relationship Radar: ranks clients to call and shows the payments behind each signal (fictional demo data)" },
+      { src: "/images/scrooge/03-radar-aws-architecture.png", alt: "How Radar runs on the team's AWS stack: a Java API in two availability zones, Aurora, SQS and SES" },
     ],
   },
   {
@@ -121,7 +120,7 @@ export const items: Item[] = [
       { label: "Video", url: "https://youtu.be/hWW6oEj4Rv0" },
     ],
     images: [
-      { src: "/images/geoguard/geo-1-dashboard.png", alt: "GeoGuard dashboard showing features, scans and compliance rate, from the demo video" },
+      { src: "/images/geoguard/geo-1-dashboard.png", alt: "The working dashboard: features scanned and the share that need compliance work, from our demo video" },
     ],
   },
   {
@@ -143,7 +142,7 @@ export const items: Item[] = [
       },
     ],
     images: [
-      { src: "/images/prize-converter/prize-1-overview.png", alt: "Prize converter routing a 1,000 USD prize to SGD, comparing the best and worst currency routes" },
+      { src: "/images/prize-converter/prize-1-overview.png", alt: "The same 1,000 USD prize via the best and worst FX routes: the 31 SGD gap is the organiser's \"surplus\"" },
     ],
   },
   {
@@ -163,9 +162,8 @@ export const items: Item[] = [
     links: [],
     note: NOT_PUBLIC,
     images: [
-      { src: "/images/companion/comp-1-today.png", alt: "Companion Today view with safe-to-spend, monthly budget and focus tasks, on demo data" },
-      { src: "/images/companion/comp-2-insights.png", alt: "Companion Insights view with spending by category and spending pace, on demo data" },
-      { src: "/images/companion/comp-3-money-budget.png", alt: "Companion budget view with per-category progress, on demo data" },
+      { src: "/images/companion/comp-1-today.png", alt: "Today view: a safe-to-spend figure from the month's budget, next to the day's tasks (demo data)" },
+      { src: "/images/companion/comp-2-insights.png", alt: "Insights: spending by category and the month's spending pace (demo data)" },
     ],
   },
   {
@@ -185,9 +183,9 @@ export const items: Item[] = [
     links: [],
     note: NOT_PUBLIC,
     images: [
-      { src: "/images/strategy-factory/factory-oos-collapse.png", alt: "Selected 30-rule mix rising in-sample, then flat in validation and test against a passive basket" },
-      { src: "/images/strategy-factory/factory-three-runs.png", alt: "In-sample versus out-of-sample Sharpe for all three runs, 9,256 rules, none passing" },
-      { src: "/images/strategy-factory/factory-report-account.png", alt: "The factory's own report: account results under base, stress and delay costs, with failed checks" },
+      { src: "/images/strategy-factory/factory-three-runs.png", alt: "All 3 runs, 9,256 rules: every selected mix fell apart on the validation and test years" },
+      { src: "/images/strategy-factory/factory-oos-collapse.png", alt: "The daily run's selected mix: Sharpe 2.60 in-sample, then flat, ending at −0.27 against passive's 1.79" },
+      { src: "/images/strategy-factory/factory-holdout-2026.png", alt: "Pre-registered portfolio on the untouched 2026 holdout: Sharpe 1.87, still behind passive's 1.96" },
     ],
   },
   {
@@ -228,8 +226,9 @@ export const items: Item[] = [
     links: [{ label: "Read the blog", url: "/blog/to-the-moon-2-equities" }],
     note: NOT_PUBLIC,
     images: [
-      { src: "/images/contextual/ctx-screen-track.png", alt: "73 reverse-DCF flags tracked against SPY: +0.3% after 20 sessions, -2.2% after 40" },
-      { src: "/images/contextual/ctx-ui-strategies.png", alt: "Contextual's paper-trading dashboard comparing three strategies side by side" },
+      { src: "/images/contextual/reverse-dcf-backtest.svg", alt: "The 7.5-year backtest: +12.5% on average from 2019, but −0.8% from 2024 on, with a 56.9% worst drop" },
+      { src: "/images/contextual/screen-funnel.svg", alt: "Skipping bad inputs: of 1,409 eligible companies on 24 Oct, only 521 had enough data to value" },
+      { src: "/images/contextual/ctx-screen-track.png", alt: "Live since August: 73 flagged names were −2.2% against SPY after 40 sessions, and only 35% beat it" },
     ],
   },
   {
@@ -250,8 +249,9 @@ export const items: Item[] = [
     links: [{ label: "Read the blog", url: "/blog/to-the-moon-1-prediction-markets" }],
     note: NOT_PUBLIC,
     images: [
-      { src: "/images/polyharvester/poly-ops-safety-gates.png", alt: "Polyharvester operator console with live trading off, dry run on and the kill switch" },
-      { src: "/images/polyharvester/market-filter.png", alt: "Polyharvester's market filter narrowing Polymarket markets to fee-free candidates" },
+      { src: "/images/polyharvester/book-sums.svg", alt: "Why there was no arbitrage: a full set sold for about $0.99 and cost about $1.01, around the $1.00 it pays" },
+      { src: "/images/polyharvester/rust-lines.svg", alt: "Infra before alpha: 61,000 lines of Rust existed before the order-book check that killed the idea" },
+      { src: "/images/polyharvester/poly-ops-safety-gates.png", alt: "The operator console kept live trading off and dry run on, so no real capital was ever at risk" },
     ],
   },
   {
@@ -269,8 +269,8 @@ export const items: Item[] = [
     links: [],
     note: `University team project. ${NOT_PUBLIC}`,
     images: [
-      { src: "/images/crypto-sentiment/01-operator-dashboard.png", alt: "Team dashboard showing system health, signal quality and a paper trading recommendation for BTC" },
-      { src: "/images/crypto-sentiment/02-service-architecture.png", alt: "Team diagram of the five services, Kafka topics and TimescaleDB" },
+      { src: "/images/crypto-sentiment/02-service-architecture.png", alt: "The team's 5-service design: services pass events over Kafka topics into TimescaleDB" },
+      { src: "/images/crypto-sentiment/01-operator-dashboard.png", alt: "The team's dashboard testing whether sentiment leads price: signal quality, timeline and a paper recommendation" },
     ],
   },
 ];

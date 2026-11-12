@@ -98,6 +98,11 @@ export const items: Item[] = [
     ],
     links: [],
     note: `University team project. ${NOT_PUBLIC}`,
+    images: [
+      { src: "/images/scrooge/01-radar-call-queue.png", alt: "Relationship Radar call queue with a possible-scam signal, payment chart and call plan, on fictional demo data" },
+      { src: "/images/scrooge/02-source-of-wealth-ledger.png", alt: "Source-of-wealth review tracing SGD 5M of SGD 8M declared, with the next actions" },
+      { src: "/images/scrooge/03-radar-aws-architecture.png", alt: "Team AWS architecture diagram with the Relationship Radar path highlighted" },
+    ],
   },
   {
     id: "geo",
@@ -114,6 +119,9 @@ export const items: Item[] = [
     links: [
       { label: "GitHub", url: "https://github.com/mattw23n/geoguard" },
       { label: "Video", url: "https://youtu.be/hWW6oEj4Rv0" },
+    ],
+    images: [
+      { src: "/images/geoguard/geo-1-dashboard.png", alt: "GeoGuard dashboard showing features, scans and compliance rate, from the demo video" },
     ],
   },
   {
@@ -134,6 +142,9 @@ export const items: Item[] = [
         url: "https://github.com/zegai0603/Totally-Fair-Prize-Converter",
       },
     ],
+    images: [
+      { src: "/images/prize-converter/prize-1-overview.png", alt: "Prize converter routing a 1,000 USD prize to SGD, comparing the best and worst currency routes" },
+    ],
   },
   {
     id: "comp",
@@ -151,6 +162,11 @@ export const items: Item[] = [
     ],
     links: [],
     note: NOT_PUBLIC,
+    images: [
+      { src: "/images/companion/comp-1-today.png", alt: "Companion Today view with safe-to-spend, monthly budget and focus tasks, on demo data" },
+      { src: "/images/companion/comp-2-insights.png", alt: "Companion Insights view with spending by category and spending pace, on demo data" },
+      { src: "/images/companion/comp-3-money-budget.png", alt: "Companion budget view with per-category progress, on demo data" },
+    ],
   },
   {
     id: "factory",
@@ -168,6 +184,11 @@ export const items: Item[] = [
     ],
     links: [],
     note: NOT_PUBLIC,
+    images: [
+      { src: "/images/strategy-factory/factory-oos-collapse.png", alt: "Selected 30-rule mix rising in-sample, then flat in validation and test against a passive basket" },
+      { src: "/images/strategy-factory/factory-three-runs.png", alt: "In-sample versus out-of-sample Sharpe for all three runs, 9,256 rules, none passing" },
+      { src: "/images/strategy-factory/factory-report-account.png", alt: "The factory's own report: account results under base, stress and delay costs, with failed checks" },
+    ],
   },
   {
     id: "to-the-moon-2-equities",
@@ -206,6 +227,10 @@ export const items: Item[] = [
     ],
     links: [{ label: "Read the blog", url: "/blog/to-the-moon-2-equities" }],
     note: NOT_PUBLIC,
+    images: [
+      { src: "/images/contextual/ctx-screen-track.png", alt: "73 reverse-DCF flags tracked against SPY: +0.3% after 20 sessions, -2.2% after 40" },
+      { src: "/images/contextual/ctx-ui-strategies.png", alt: "Contextual's paper-trading dashboard comparing three strategies side by side" },
+    ],
   },
   {
     id: "poly",
@@ -224,6 +249,10 @@ export const items: Item[] = [
     ],
     links: [{ label: "Read the blog", url: "/blog/to-the-moon-1-prediction-markets" }],
     note: NOT_PUBLIC,
+    images: [
+      { src: "/images/polyharvester/poly-ops-safety-gates.png", alt: "Polyharvester operator console with live trading off, dry run on and the kill switch" },
+      { src: "/images/polyharvester/market-filter.png", alt: "Polyharvester's market filter narrowing Polymarket markets to fee-free candidates" },
+    ],
   },
   {
     id: "crypto",
@@ -239,5 +268,9 @@ export const items: Item[] = [
     ],
     links: [],
     note: `University team project. ${NOT_PUBLIC}`,
+    images: [
+      { src: "/images/crypto-sentiment/01-operator-dashboard.png", alt: "Team dashboard showing system health, signal quality and a paper trading recommendation for BTC" },
+      { src: "/images/crypto-sentiment/02-service-architecture.png", alt: "Team diagram of the five services, Kafka topics and TimescaleDB" },
+    ],
   },
 ];

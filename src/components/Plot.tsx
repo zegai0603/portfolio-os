@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ZoomImage } from "@/components/ZoomImage";
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
 import { axis, items, type Item, type Lane } from "@/lib/profile";
 
@@ -110,8 +110,8 @@ function Details({ item }: { item: Item }) {
             {item.images && (
                 <div className="mt-4 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
                     {item.images.map((image) => (
-                        <div key={image.src} className="relative aspect-[16/10] border border-line">
-                            <Image src={image.src} alt={image.alt} fill sizes="(max-width: 700px) 100vw, 600px" className="object-cover" />
+                        <div key={image.src} className="border border-line">
+                            <ZoomImage src={image.src} alt={image.alt} />
                         </div>
                     ))}
                 </div>
